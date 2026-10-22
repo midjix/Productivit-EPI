@@ -206,7 +206,9 @@ class DemoSeeder extends Seeder
                     continue;
                 }
 
-                for ($i = random_int(2, 5); $i > 0; $i--) {
+                // 4 à 8 prestations d'environ 1 forfait (≈ 1 h) par journée de 8 h : efficacité
+                // moyenne proche de l'objectif 0,75, avec des salariés au-dessus et en dessous.
+                for ($i = random_int(4, 8); $i > 0; $i--) {
                     $interne = $typesInternes->isNotEmpty() && random_int(1, 10) === 1;
                     $type = $interne ? $typesInternes->random() : ($typesMetier->isNotEmpty() ? $typesMetier->random() : null);
 
