@@ -34,12 +34,15 @@ Légende : ✅ effectué · 🔜 prévu (étape indiquée) · ⏸ conditionnel
 | | Un import (manuel ou planifié) journalise son résultat dans `imports` et recalcule le cache | `tests/Feature/Etl/ImportTest` | 🔜 étape ETL |
 | | Un changement de barème déclenche le recalcul des mois concernés | `tests/Feature/Etl/RecalculApresBaremeTest` | 🔜 étape ETL |
 | | Export Excel : mêmes filtres et même périmètre que l'écran | `tests/Feature/Api/ExportExcelTest` | 🔜 étape export |
-| **Sécurité** | 401 sans jeton sur toutes les routes protégées | `tests/Feature/Securite/AuthentificationTest` | 🔜 étape auth |
-| | 403 : salarié sur les données d'un autre, coordinateur hors de son service, non-admin sur la matrice / l'import | `tests/Feature/Securite/AutorisationsTest` | 🔜 étape auth |
-| | Validation serveur : entrées invalides → 422, jamais 500 | inclus dans chaque test d'endpoint | 🔜 étape API |
+| **Sécurité** | 401 sans jeton ou avec jeton invalide / révoqué sur les routes protégées ; jeton révocable par appareil ; empreinte seule stockée | `tests/Feature/Securite/AuthentificationTest` (9 tests) | ✅ |
+| | 403 par rôle avec héritage (matrice 3 rôles × 3 niveaux) ; 401 avant tout contrôle de rôle ; 403 sans trace ni classe d'exception (debug off) | `tests/Feature/Securite/AutorisationsTest` (11 tests) | ✅ |
+| | 403 : salarié sur les données d'un autre, coordinateur hors de son service (policies des ressources) | `tests/Feature/Api/*` | 🔜 étape API |
+| | Validation serveur : entrées invalides → 422, jamais 500 ; message identique email inconnu / mot de passe faux (pas d'énumération de comptes) ; compte désactivé → 403 | `AuthentificationTest` + chaque test d'endpoint | ✅ (login) / 🔜 (API) |
+| | Force brute : 6ᵉ tentative en une minute → 429 | `AuthentificationTest` | ✅ |
+| | Réponses sans données RH (minimisation RGPD : pas de matricule, noPers, id EpiLogg, dates d'entrée/sortie) | `AuthentificationTest` | ✅ |
 | | Injection SQL : filtres passés par Eloquent / requêtes préparées (test avec payload `' OR 1=1 --`) | `tests/Feature/Securite/InjectionTest` | 🔜 étape API |
 | | Écriture refusée sur la connexion `epilogg` (session `READ ONLY`) | `tests/Feature/Securite/LectureSeuleSourcesTest` | 🔜 étape connecteurs |
-| | Veille vulnérabilités : audit des dépendances (`composer audit`, `npm audit`), vérification ChainDrop/Shai-Hulud effectuée le 23/09/2026 (voir §4) | manuel + CI | ✅ (ponctuel) / 🔜 CI |
+| | Veille vulnérabilités : `composer audit` (22/10/2026 : 6 avis → 0 après mise à jour), `npm audit` au premier `npm install`, vérification ChainDrop/Shai-Hulud du 23/09/2026 (voir §4) | manuel, à ajouter en CI | ✅ (ponctuel) / 🔜 CI |
 | **Performance** | Consultation de 5 ans d'historique via le cache : < 1 s pour un salarié, < 2 s pour la vue « Total EPI » (jeu de 60 mois × 30 salariés) | `tests/Feature/Performance/CacheStatistiquesTest` | ⏸ étape API, si le contexte le justifie |
 | **Jeu d'essai** | Fonctionnalité la plus représentative : calcul mensuel d'efficacité. Données d'entrée, résultat attendu (calcul manuel), résultat obtenu | §3 | 🔜 étape ETL |
 | **Recette métier** | Un mois réel calculé à la main par la Fondation, comparé au résultat de l'application sur les vraies données importées | procès-verbal de recette | 🔜 après connecteurs, avec Michel Flammant |
@@ -81,11 +84,14 @@ Résultat obtenu : *à compléter lors de l'exécution du test `CalculEfficacite
 | 22/10/2026 | Migration `restructure_tarifs_and_statistics` : `Cannot drop index … needed in a foreign key constraint` | MariaDB avait adossé la clé étrangère à l'index composite existant au lieu d'en créer un dédié | Supprimer la contrainte avant l'index, puis la colonne (`up` et `down`) | Cycle `migrate` / `rollback` / `migrate` joué deux fois |
 | 22/10/2026 | Après l'échec ci-dessus, `Table 'tarifs' already exists` | Le DDL MySQL/MariaDB n'est pas transactionnel : état partiel après échec | Base de dev recréée (`migrate:fresh`) ; règle : tester chaque migration en `up` et `down` sur base jetable avant commit | Idem |
 | 23/09/2026 | Vérification de l'attaque npm « ChainDrop » (worm keyv/cacheable du 04/08/2026) | — | Aucun `node_modules` dans le projet, aucun indicateur de compromission sur la machine (hooks `.claude`/`.vscode`, fichiers `setup.mjs`/`Math_Symbol.js`, cache npm, dépôts GitHub) | Procédure consignée dans PREPARATION-JURY ; `npm install --ignore-scripts` recommandé au premier install |
+| 22/10/2026 | `composer audit` : 6 avis sur 5 paquets (Laravel < 13.30 XSS page de debug, commonmark DoS, flysystem, symfony http-foundation et yaml ReDoS) | Dépendances figées au 15/08 par `composer.lock` | `composer update` ciblé sur les 5 paquets (Laravel 13.25 → 13.38), audit → 0 avis, suite de tests verte | `composer audit` à chaque étape ; à automatiser en CI |
+| 22/10/2026 | 3 tests de sécurité en échec à la première exécution | (1) ressource JSON enveloppée dans `data` ; (2) le guard de test garde l'utilisateur résolu entre deux requêtes ; (3) `APP_DEBUG=true` ajoute `exception` aux réponses d'erreur | (1) `JsonResource::withoutWrapping()` ; (2) `forgetGuards()` entre les requêtes du test ; (3) le test force `app.debug=false` (comportement de production) | Tests `AuthentificationTest`, `AutorisationsTest` |
 
 ## 5. Synthèse des résultats
 
 | Date | Suite | Résultat |
 |---|---|---|
 | 22/10/2026 | 8 classes, 39 tests, 78 assertions (unitaires + intégration persistance + seeders), MariaDB 12.3 | ✅ 39 réussis, 0 échec, 34 s |
+| 22/10/2026 | 10 classes, 59 tests, 138 assertions (+ authentification et autorisations), après mise à jour de sécurité des dépendances | ✅ 59 réussis, 0 échec, 43 s ; CI GitHub Actions ✅ sur le commit précédent |
 
 *(ligne ajoutée à chaque étape)*

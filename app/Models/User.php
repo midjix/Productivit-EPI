@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * Entité « Utilisateur » du diagramme de classes.
@@ -31,7 +32,7 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * @return array<string, string>
@@ -86,6 +87,15 @@ class User extends Authenticatable
     public function estCoordinateur(): bool
     {
         return $this->aRole(Role::Coordinateur);
+    }
+
+    /**
+     * Un compte peut se connecter s'il est actif et que sa date de sortie
+     * n'est pas passée (un salarié parti garde ses données, pas son accès).
+     */
+    public function peutSeConnecter(): bool
+    {
+        return $this->actif && ($this->date_sortie === null || $this->date_sortie->isFuture());
     }
 
     // ---- Scopes ----------------------------------------------------------
