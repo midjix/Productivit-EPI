@@ -9,11 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Donnée brute EpiLogg : prestation(s) d'un forfait réalisée(s) par un salarié un jour donné.
+ * Donnée brute EpiLogg : une prestation (ligne `benefits`) réalisée par un salarié un jour donné.
+ *
+ * `quantite` = nombre de forfaits saisis par le salarié, DÉCIMAL (ex. 1,5 forfait 9.1 = 45 min).
+ * `type_prestation` = libellé descriptif EpiLogg (entretien, rapport, déplacement…), filtre d'affichage.
  * Aucune donnée sur le bénéficiaire (minimisation RGPD).
  */
 #[Table('donnees_epilogg')]
-#[Fillable(['user_id', 'categorie_suivi_id', 'date', 'quantite', 'reference_externe', 'import_id'])]
+#[Fillable(['user_id', 'categorie_suivi_id', 'type_prestation', 'date', 'quantite', 'reference_externe', 'import_id'])]
 class DonneeEpilogg extends Model
 {
     use HasFactory;
@@ -22,7 +25,7 @@ class DonneeEpilogg extends Model
     {
         return [
             'date' => 'date',
-            'quantite' => 'integer',
+            'quantite' => 'decimal:2',
         ];
     }
 

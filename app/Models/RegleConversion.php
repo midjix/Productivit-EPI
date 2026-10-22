@@ -12,14 +12,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * Règle de la matrice de conversion forfait → minutes, bornée dans le temps.
+ * Règle de la matrice de conversion forfait → minutes, bornée dans le temps,
+ * rattachée à un TARIF (8.1, 8.2, 9.1, AUTRE) et non à un type de suivi :
+ * c'est le tarif qui fixe la valeur d'un forfait.
  *
  * Une règle n'est JAMAIS modifiée après coup : tout changement de barème passe
- * par la clôture de la règle courante et la création d'une nouvelle (voir EtlService /
- * service de gestion de la matrice). `date_fin_validite` NULL = règle en vigueur.
+ * par la clôture de la règle courante et la création d'une nouvelle (voir
+ * MatriceConversionService). `date_fin_validite` NULL = règle en vigueur.
  */
 #[Table('regles_conversion')]
-#[Fillable(['categorie_suivi_id', 'minutes', 'date_debut_validite', 'date_fin_validite', 'commentaire', 'created_by'])]
+#[Fillable(['tarif_id', 'minutes', 'date_debut_validite', 'date_fin_validite', 'commentaire', 'created_by'])]
 class RegleConversion extends Model
 {
     use HasFactory;
@@ -33,9 +35,9 @@ class RegleConversion extends Model
         ];
     }
 
-    public function categorieSuivi(): BelongsTo
+    public function tarif(): BelongsTo
     {
-        return $this->belongsTo(CategorieSuivi::class);
+        return $this->belongsTo(Tarif::class);
     }
 
     public function auteur(): BelongsTo

@@ -18,11 +18,14 @@ use Illuminate\Notifications\Notifiable;
  *
  * Le nom `User` est conservé (convention Laravel : authentification, factories,
  * policies s'appuient dessus) ; le vocabulaire métier reste « Utilisateur / Salarié ».
- * Pivot de jointure des imports : `dsk_no_pers` (DSK) et `matricule` (DSK ↔ EpiLogg).
+ * Pivots de jointure des imports (il n'existe AUCUN identifiant commun entre les sources) :
+ *  - DSK     : `dsk_no_pers` (noPers) / `matricule` (codePers) ;
+ *  - EpiLogg : `epilogg_user_id` (users.id EpiLogg), apparié sur l'adresse `email`
+ *              (recommandation du prestataire CBC, 26/08/2026).
  */
 #[Fillable([
     'name', 'email', 'password',
-    'matricule', 'dsk_no_pers', 'service_id', 'role', 'actif', 'date_entree', 'date_sortie',
+    'matricule', 'dsk_no_pers', 'epilogg_user_id', 'service_id', 'role', 'actif', 'date_entree', 'date_sortie',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

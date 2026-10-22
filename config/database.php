@@ -84,6 +84,39 @@ return [
             ]) : [],
         ],
 
+        /*
+        |----------------------------------------------------------------------
+        | EpiLogg — source externe, LECTURE SEULE
+        |----------------------------------------------------------------------
+        |
+        | Base de l'ERP EpiLogg (hébergée par CBC Informatique sur le réseau de
+        | production de la Fondation, joignable uniquement via le VPN). Le compte
+        | SQL est en lecture seule côté serveur ; côté application, seul le
+        | ConnecteurEpilogg utilise cette connexion et n'émet que des SELECT.
+        | Aucune migration, aucun modèle en écriture ne doit pointer dessus.
+        |
+        */
+
+        'epilogg' => [
+            'driver' => 'mysql',
+            'host' => env('EPILOGG_DB_HOST', '127.0.0.1'),
+            'port' => env('EPILOGG_DB_PORT', '3306'),
+            'database' => env('EPILOGG_DB_DATABASE', 'fondation_epi'),
+            'username' => env('EPILOGG_DB_USERNAME', ''),
+            'password' => env('EPILOGG_DB_PASSWORD', ''),
+            'charset' => env('EPILOGG_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('EPILOGG_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('EPILOGG_DB_SSL_CA'),
+                // Garde-fou applicatif : la session SQL démarre en lecture seule.
+                Mysql::ATTR_INIT_COMMAND => 'SET SESSION TRANSACTION READ ONLY',
+            ]) : [],
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DB_URL'),
