@@ -35,4 +35,20 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | DSK — API REST du pointage RH (lecture seule, token Bearer)
+    |--------------------------------------------------------------------------
+    | `url` = racine du serveur ; `prefix` = préfixe des ressources OpenAPI (/dsknet/v2).
+    | `token` : jeton statique facultatif ; sinon POST /login avec login/password.
+    */
+    'dsk' => [
+        'url' => env('DSK_API_URL', ''),
+        'prefix' => env('DSK_API_PREFIX', 'dsknet/v2'),
+        'login' => env('DSK_API_LOGIN'),
+        'password' => env('DSK_API_PASSWORD'),
+        'token' => env('DSK_API_TOKEN'),
+        'timeout' => (int) env('DSK_API_TIMEOUT', 60),
+    ],
+
 ];
