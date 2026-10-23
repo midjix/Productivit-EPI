@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\ChangerMotDePasseRequest;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -55,5 +56,18 @@ class AuthController extends Controller
     public function me(Request $request): UserResource
     {
         return new UserResource($request->user()->load('service'));
+    }
+
+    /**
+     * Changement de son propre mot de passe. Les autres appareils sont déconnectés
+     * (jetons révoqués), la session courante est conservée.
+     */
+    public function changerMotDePasse(ChangerMotDePasseRequest $request): JsonResponse
+    {
+        $user = $request->user();
+        $user->forceFill(['password' => $request->validated('password')])->save();
+        $user->tokens()->whereKeyNot($user->currentAccessToken()->id)->delete();
+
+        return response()->json(status: 204);
     }
 }

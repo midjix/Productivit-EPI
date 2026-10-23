@@ -1,0 +1,34 @@
+<script setup>
+import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
+import AppHeader from '@/components/AppHeader.vue';
+import AppSidebar from '@/components/AppSidebar.vue';
+
+/**
+ * Gabarit des écrans connectés, organisé comme DSKnet : bandeau en haut (logo, titre
+ * de la page, actions), menu latéral (avatar, nom, navigation) et zone de contenu.
+ * La couleur du menu dépend du rôle (attribut data-role lu par la feuille de style).
+ */
+const auth = useAuthStore();
+const route = useRoute();
+const menuOuvert = ref(false);
+
+watch(() => route.fullPath, () => {
+    menuOuvert.value = false;
+});
+</script>
+
+<template>
+    <div :data-role="auth.role" class="flex min-h-screen flex-col bg-surface-muted">
+        <AppHeader :titre="route.meta.titre ?? ''" @basculer-menu="menuOuvert = !menuOuvert" />
+
+        <div class="flex flex-1">
+            <AppSidebar :ouvert="menuOuvert" @fermer="menuOuvert = false" />
+
+            <main class="min-w-0 flex-1">
+                <RouterView :key="route.fullPath" />
+            </main>
+        </div>
+    </div>
+</template>

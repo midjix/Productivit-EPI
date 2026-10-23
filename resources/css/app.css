@@ -2,8 +2,135 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source '../js/**/*.vue';
+@source '../js/**/*.js';
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+/*
+ * Charte graphique Fondation EPI (site fondationepi.lu, EpiLogg) :
+ *   orange EPI #F39200, anthracite #575756, blanc, beige clair #FDE5C0.
+ * Organisation des écrans inspirée de DSKnet (bandeau blanc + menu latéral coloré + cartes).
+ *
+ * Tout passe par des variables CSS :
+ *  - le thème clair / sombre change les surfaces et l'encre (automatique selon le système,
+ *    ou forcé par data-theme sur <html>) ;
+ *  - le rôle change la couleur du menu latéral (data-role sur la racine de l'application).
+ * Les composants n'utilisent que les couleurs sémantiques ci-dessous (bg-surface, text-ink…).
+ */
+
+:root {
+    --epi-orange: #f39200;
+    --epi-ocre: #c96e00;
+    --epi-anthracite: #575756;
+    --epi-beige: #fde5c0;
+
+    /* Thème clair */
+    --surface: #ffffff;
+    --surface-muted: #f4f3f1;
+    --surface-raised: #ffffff;
+    --border: #e4e2de;
+    --ink: #2b2b2a;
+    --ink-secondary: #575756;
+    --ink-muted: #8a8884;
+    --accent: var(--epi-orange);
+    --accent-strong: var(--epi-ocre);
+    --header-bg: #ffffff;
+    --header-ink: #2b2b2a;
+    --chart-series: #d97b00;
+    --chart-grid: #e4e2de;
+    --status-good: #2e7d32;
+    --status-bad: #c62828;
+
+    /* Rôle par défaut (salarié) */
+    --role: var(--epi-orange);
+    --role-strong: #d97b00;
+    --role-ink: #ffffff;
+    --role-ink-muted: rgba(255, 255, 255, 0.78);
+
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']) {
+        --surface: #1f1f1e;
+        --surface-muted: #161615;
+        --surface-raised: #2a2a28;
+        --border: #3a3a38;
+        --ink: #f1efea;
+        --ink-secondary: #c9c6bf;
+        --ink-muted: #9a978f;
+        --header-bg: #1a1a19;
+        --header-ink: #f1efea;
+        --chart-series: #c96e00;
+        --chart-grid: #3a3a38;
+        --status-good: #66bb6a;
+        --status-bad: #ef5350;
+        color-scheme: dark;
+    }
+}
+
+:root[data-theme='dark'] {
+    --surface: #1f1f1e;
+    --surface-muted: #161615;
+    --surface-raised: #2a2a28;
+    --border: #3a3a38;
+    --ink: #f1efea;
+    --ink-secondary: #c9c6bf;
+    --ink-muted: #9a978f;
+    --header-bg: #1a1a19;
+    --header-ink: #f1efea;
+    --chart-series: #c96e00;
+    --chart-grid: #3a3a38;
+    --status-good: #66bb6a;
+    --status-bad: #ef5350;
+    color-scheme: dark;
+}
+
+/* Couleur de fond du menu latéral selon le rôle (trois nuances de la charte). */
+[data-role='salarie'] {
+    --role: var(--epi-orange);
+    --role-strong: #d97b00;
+}
+[data-role='coordinateur'] {
+    --role: var(--epi-ocre);
+    --role-strong: #a85a00;
+}
+[data-role='administrateur'] {
+    --role: var(--epi-anthracite);
+    --role-strong: #3f3f3e;
+}
+
+@theme inline {
+    --font-sans: 'Poppins', ui-sans-serif, system-ui, sans-serif;
+
+    --color-surface: var(--surface);
+    --color-surface-muted: var(--surface-muted);
+    --color-surface-raised: var(--surface-raised);
+    --color-border: var(--border);
+    --color-ink: var(--ink);
+    --color-ink-secondary: var(--ink-secondary);
+    --color-ink-muted: var(--ink-muted);
+    --color-accent: var(--accent);
+    --color-accent-strong: var(--accent-strong);
+    --color-header: var(--header-bg);
+    --color-header-ink: var(--header-ink);
+    --color-role: var(--role);
+    --color-role-strong: var(--role-strong);
+    --color-role-ink: var(--role-ink);
+    --color-role-ink-muted: var(--role-ink-muted);
+    --color-good: var(--status-good);
+    --color-bad: var(--status-bad);
+    --color-epi-orange: var(--epi-orange);
+    --color-epi-ocre: var(--epi-ocre);
+    --color-epi-anthracite: var(--epi-anthracite);
+    --color-epi-beige: var(--epi-beige);
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    background-color: var(--surface-muted);
+    color: var(--ink);
 }

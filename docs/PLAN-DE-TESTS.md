@@ -9,7 +9,8 @@
 - **Pyramide** : beaucoup de tests unitaires (purs, sans base, rapides), des tests d'intégration ciblés sur la persistance et les connecteurs, quelques tests fonctionnels de bout en bout par cas d'utilisation, et des tests de sécurité systématiques sur chaque endpoint.
 - **Données** : factories (états nommés) pour les tests ; `DemoSeeder` pour les recettes manuelles et la soutenance ; `ReferentielSeeder` pour le barème réel.
 - **Critère de réussite global** : suite verte en local **et** en intégration continue avant tout merge sur `main`.
-- **Automatisation** : GitHub Actions (`.github/workflows/tests.yml`) rejoue la suite à chaque push et pull request contre un service MariaDB 12.3.
+- **Automatisation** : GitHub Actions (`.github/workflows/tests.yml`) rejoue la suite à chaque push et pull request contre un service MariaDB 12.3 ; un second job compile le front (Vitest, `npm audit`, `vite build`).
+- **Front** : Vitest + Vue Test Utils (jsdom) pour les fonctions de mise en forme, les stores et les composants ; contrôle visuel par captures de navigateur headless à chaque étape d'interface.
 
 ## 2. Couverture par type de test
 
@@ -23,6 +24,7 @@ Légende : ✅ effectué · 🔜 prévu (étape indiquée) · ⏸ conditionnel
 | | Intervalle de validité d'une règle (`couvre`, `estOuverte`) | `tests/Unit/Models/RegleConversionTest` (6 cas) | ✅ |
 | | Calcul de la cascade d'efficacité (dispo EPI, dispo client, ratio, ratio brut, NULL si dénominateur ≤ 0, décimaux exacts) — jeu d'essai de la Fondation | `tests/Unit/Etl/CalculEfficaciteTest` (5 tests) | ✅ |
 | | Conversion forfaits × barème à la date de chaque prestation (30 min en 2025, 45 min en 2026), quantité décimale, type non qualifié ignoré | `tests/Feature/Etl/ConsolidationServiceTest` (4 tests) | ✅ |
+| | **Front** : mise en forme (minutes → heures, ratios → pourcentages à la française, non calculable), store de session (héritage des rôles, initiales, déconnexion locale), composant tableau des mois (statut de l'objectif en texte, jamais en couleur seule) | `resources/js/**/*.test.js` (Vitest, 3 fichiers, 7 tests) | ✅ |
 | **Intégration** — composants ↔ base / sources | Historisation : chaque date retombe sur le barème de son époque ; une seule règle ouverte ; délégation type → tarif | `tests/Feature/Persistance/HistorisationReglesTest` (5 tests) | ✅ |
 | | Idempotence des imports : unicité `reference_externe`, unicité (salarié, compteur, jour), `upsert` sans doublon, décimal conservé | `tests/Feature/Persistance/IdempotenceImportsTest` (5 tests) | ✅ |
 | | Seeders : barème conforme à l'Excel, référentiel idempotent sans réécriture de l'historique, cas limites de la démo, cache vide | `tests/Feature/Persistance/SeedersTest` (3 tests) | ✅ |
@@ -46,6 +48,9 @@ Légende : ✅ effectué · 🔜 prévu (étape indiquée) · ⏸ conditionnel
 | | 403 par **périmètre** (policies) : salarié sur les données d'un autre, coordinateur sur un autre service, coordinateur sans service (pas de « null = null »), salarié sur `/services` et `/globales` ; 403 JSON sans trace ; 404 sur identifiant inconnu ou non numérique | `TableauDeBordSalarieTest`, `StatistiquesServiceTest`, `StatistiquesGlobalesTest` | ✅ |
 | | Routes d'administration (8 routes) : 401 sans jeton, 403 pour Coordinateur et Salarié | `tests/Feature/Admin/AccesAdminTest` (8 cas) | ✅ |
 | | Validation serveur : entrées invalides → 422, jamais 500 (année non entière, hors bornes 2000..N+1, mois hors 1..12) ; message identique email inconnu / mot de passe faux (pas d'énumération de comptes) ; compte désactivé → 403 | `AuthentificationTest`, `TableauDeBordSalarieTest` | ✅ |
+| | Changement de son propre mot de passe : ancien mot de passe exigé, politique 12 caractères, nouveau ≠ ancien, session courante conservée, autres appareils déconnectés | `tests/Feature/Securite/MotDePasseTest` (2 tests) | ✅ |
+| | Chaîne d'approvisionnement npm : `ignore-scripts` imposé par `.npmrc`, `npm audit` en CI (niveau high) ; 23/10/2026 : 3 avis (Vitest 3) → 0 après passage à Vitest 5 | CI job `front` | ✅ |
+| | Vérification visuelle du front (connexion, tableau de bord × 3 rôles, thème clair et sombre, mobile) par captures Edge headless pilotées en DevTools Protocol | manuel, scratchpad | ✅ 23/10/2026 |
 | | Force brute : 6ᵉ tentative en une minute → 429 | `AuthentificationTest` | ✅ |
 | | Réponses sans données RH (minimisation RGPD : pas de matricule, noPers, id EpiLogg, dates d'entrée/sortie) | `AuthentificationTest` | ✅ |
 | | Injection SQL : 6 charges (`' OR 1=1 --`, `1 OR 1=1`, `UNION SELECT`, `; DROP TABLE`, flottant, tableau) rejetées en 422 par la validation, table intacte ; charge dans un identifiant de route → 404 (`whereNumber`, sans coercition MariaDB) ; preuve par le journal SQL que la valeur valide voyage en **paramètre lié** et n'est jamais concaténée | `tests/Feature/Securite/InjectionTest` (8 tests) | ✅ |

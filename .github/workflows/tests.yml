@@ -64,3 +64,30 @@ jobs:
 
       - name: Lancer les tests
         run: php artisan test --without-tty
+
+  front:
+    name: Front Vue.js (Vitest + build)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      # `.npmrc` impose ignore-scripts : aucun script d'installation de dépendance n'est exécuté
+      # (chaîne d'approvisionnement : ver npm « ChainDrop » d'août 2026).
+      - name: Installer les dépendances npm
+        run: npm ci
+
+      - name: Audit des dépendances npm
+        run: npm audit --audit-level=high
+
+      - name: Tests unitaires et de composants (Vitest)
+        run: npm test
+
+      - name: Compilation de production (Vite)
+        run: npm run build
