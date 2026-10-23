@@ -1,33 +1,45 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
+import i18n from '@/i18n';
 
 /**
  * Routes de la SPA. `meta.requiresAuth` protège les vues ; `meta.role` cache celles
  * que le rôle n'a pas (le serveur reste le garant : 403 si l'URL est forgée).
- * Les vues de l'étape B (service, globale, administration) sont déclarées
- * pour que le menu et les gardes soient en place.
+ * `meta.titre` est une clé de traduction (titres.*).
  */
 const routes = [
     {
         path: '/connexion',
         name: 'connexion',
         component: () => import('@/pages/LoginPage.vue'),
-        meta: { invite: true, titre: 'Connexion' },
+        meta: { invite: true, titre: 'connexion' },
     },
     {
         path: '/',
         component: () => import('@/layouts/AppLayout.vue'),
         meta: { requiresAuth: true },
         children: [
-            { path: '', name: 'tableau-de-bord', component: () => import('@/pages/DashboardPage.vue'), meta: { titre: 'Tableau de bord' } },
-            { path: 'salaries/:id(\\d+)', name: 'salarie', component: () => import('@/pages/DashboardPage.vue'), props: true, meta: { titre: 'Tableau de bord', role: 'coordinateur' } },
-            { path: 'service', name: 'service', component: () => import('@/pages/BientotPage.vue'), meta: { titre: 'Mon service', role: 'coordinateur' } },
-            { path: 'globales', name: 'globales', component: () => import('@/pages/BientotPage.vue'), meta: { titre: 'Vue globale', role: 'administrateur' } },
-            { path: 'administration', name: 'administration', component: () => import('@/pages/BientotPage.vue'), meta: { titre: 'Administration', role: 'administrateur' } },
-            { path: 'mot-de-passe', name: 'mot-de-passe', component: () => import('@/pages/ChangerMotDePassePage.vue'), meta: { titre: 'Changer mon mot de passe' } },
+            { path: '', name: 'tableau-de-bord', component: () => import('@/pages/DashboardPage.vue'), meta: { titre: 'tableauDeBord' } },
+            { path: 'salaries/:id(\\d+)', name: 'salarie', component: () => import('@/pages/DashboardPage.vue'), props: true, meta: { titre: 'tableauDeBord', role: 'coordinateur' } },
+            { path: 'service', name: 'service', component: () => import('@/pages/ServicePage.vue'), meta: { titre: 'monService', role: 'coordinateur' } },
+            { path: 'services/:id(\\d+)', name: 'service-detail', component: () => import('@/pages/ServicePage.vue'), props: true, meta: { titre: 'service', role: 'coordinateur' } },
+            { path: 'globales', name: 'globales', component: () => import('@/pages/GlobalePage.vue'), meta: { titre: 'vueGlobale', role: 'administrateur' } },
+            {
+                path: 'administration',
+                component: () => import('@/pages/admin/AdminLayout.vue'),
+                meta: { titre: 'administration', role: 'administrateur' },
+                children: [
+                    { path: '', name: 'administration', redirect: { name: 'admin-imports' } },
+                    { path: 'imports', name: 'admin-imports', component: () => import('@/pages/admin/ImportsPage.vue'), meta: { titre: 'administration', role: 'administrateur' } },
+                    { path: 'referentiels', name: 'admin-referentiels', component: () => import('@/pages/admin/ReferentielsPage.vue'), meta: { titre: 'administration', role: 'administrateur' } },
+                    { path: 'matrice', name: 'admin-matrice', component: () => import('@/pages/admin/MatricePage.vue'), meta: { titre: 'administration', role: 'administrateur' } },
+                    { path: 'organigramme', name: 'admin-organigramme', component: () => import('@/pages/admin/OrganigrammePage.vue'), meta: { titre: 'administration', role: 'administrateur' } },
+                ],
+            },
+            { path: 'mot-de-passe', name: 'mot-de-passe', component: () => import('@/pages/ChangerMotDePassePage.vue'), meta: { titre: 'motDePasse' } },
         ],
     },
-    { path: '/:pathMatch(.*)*', name: 'introuvable', component: () => import('@/pages/NotFoundPage.vue'), meta: { titre: 'Page introuvable' } },
+    { path: '/:pathMatch(.*)*', name: 'introuvable', component: () => import('@/pages/NotFoundPage.vue'), meta: { titre: 'introuvable' } },
 ];
 
 const router = createRouter({
@@ -58,8 +70,13 @@ router.beforeEach(async (to) => {
     return true;
 });
 
+export function titreDocument(cle) {
+    const t = i18n.global.t;
+    return cle ? `${t(`titres.${cle}`)} — ${t('app.titre')} EPI` : `${t('app.titre')} — ${t('app.fondation')}`;
+}
+
 router.afterEach((to) => {
-    document.title = to.meta.titre ? `${to.meta.titre} — Suivi d'efficacité EPI` : "Suivi d'efficacité — Fondation EPI";
+    document.title = titreDocument(to.meta.titre);
 });
 
 export default router;

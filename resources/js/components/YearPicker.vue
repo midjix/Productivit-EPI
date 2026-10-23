@@ -1,5 +1,6 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /** Sélecteur d'année « ‹ 2026 › » comme le sélecteur de mois du récapitulatif DSKnet. */
 const props = defineProps({
@@ -9,6 +10,7 @@ const props = defineProps({
     min: { type: Number, default: 2020 },
 });
 const emit = defineEmits(['update:modelValue']);
+const { t } = useI18n();
 
 const peutReculer = computed(() => props.modelValue > props.min);
 const peutAvancer = computed(() => props.modelValue < props.max);
@@ -19,9 +21,9 @@ const options = computed(() => {
 </script>
 
 <template>
-    <div class="inline-flex items-center overflow-hidden rounded-full border border-white/60 text-sm">
-        <button type="button" class="px-3 py-1.5 hover:bg-white/15 disabled:opacity-40" :disabled="!peutReculer" aria-label="Année précédente" @click="emit('update:modelValue', modelValue - 1)">‹</button>
-        <label class="sr-only" for="annee">Année</label>
+    <div class="inline-flex items-center overflow-hidden rounded-full border border-current/60 text-sm">
+        <button type="button" class="px-3 py-1.5 hover:bg-white/15 disabled:opacity-40" :disabled="!peutReculer" :aria-label="t('annee.precedente')" @click="emit('update:modelValue', modelValue - 1)">‹</button>
+        <label class="sr-only" for="annee">{{ t('annee.libelle') }}</label>
         <select
             id="annee"
             :value="modelValue"
@@ -30,6 +32,6 @@ const options = computed(() => {
         >
             <option v-for="a in options" :key="a" :value="a" class="text-ink">{{ a }}</option>
         </select>
-        <button type="button" class="px-3 py-1.5 hover:bg-white/15 disabled:opacity-40" :disabled="!peutAvancer" aria-label="Année suivante" @click="emit('update:modelValue', modelValue + 1)">›</button>
+        <button type="button" class="px-3 py-1.5 hover:bg-white/15 disabled:opacity-40" :disabled="!peutAvancer" :aria-label="t('annee.suivante')" @click="emit('update:modelValue', modelValue + 1)">›</button>
     </div>
 </template>

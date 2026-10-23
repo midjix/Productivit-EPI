@@ -1,14 +1,15 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useThemeStore } from '@/stores/theme';
 
 /** Cycle automatique → clair → sombre, comme le réglage « thème de mode » de DSKnet. */
 const theme = useThemeStore();
+const { t } = useI18n();
 
 const SUIVANT = { auto: 'light', light: 'dark', dark: 'auto' };
-const LIBELLE = { auto: 'Thème automatique (système)', light: 'Thème clair', dark: 'Thème sombre' };
 
-const libelle = computed(() => LIBELLE[theme.choix]);
+const libelle = computed(() => t(`theme.${theme.choix}`));
 </script>
 
 <template>

@@ -1,13 +1,16 @@
 <script setup>
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import ThemeToggle from '@/components/ThemeToggle.vue';
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 
 defineProps({ titre: { type: String, default: '' } });
 defineEmits(['basculer-menu']);
 
 const auth = useAuthStore();
 const router = useRouter();
+const { t } = useI18n();
 
 // Fichier servi par Laravel depuis public/ (hors pipeline Vite) : chemin lié dynamiquement.
 const LOGO = '/images/logo-epi.png';
@@ -19,17 +22,17 @@ async function seDeconnecter() {
 </script>
 
 <template>
-    <header class="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-border bg-header px-4 text-header-ink shadow-sm">
+    <header class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-border bg-header px-4 text-header-ink shadow-sm">
         <button
             type="button"
             class="rounded-md p-2 hover:bg-surface-muted lg:hidden"
-            aria-label="Ouvrir le menu"
+            :aria-label="t('nav.ouvrirMenu')"
             @click="$emit('basculer-menu')"
         >
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
 
-        <RouterLink :to="{ name: 'tableau-de-bord' }" class="flex items-center gap-3" aria-label="Accueil">
+        <RouterLink :to="{ name: 'tableau-de-bord' }" class="flex items-center gap-3" :aria-label="t('nav.accueil')">
             <span class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-md bg-white shadow-sm">
                 <img :src="LOGO" alt="Fondation EPI" class="h-10 w-10 object-contain" />
             </span>
@@ -39,13 +42,14 @@ async function seDeconnecter() {
             {{ titre }}
         </h1>
 
+        <LanguageSwitcher class="hidden sm:flex" />
         <ThemeToggle />
 
         <button
             type="button"
             class="rounded-md p-2 text-header-ink hover:bg-surface-muted hover:text-accent"
-            title="Se déconnecter"
-            aria-label="Se déconnecter"
+            :title="t('nav.deconnexion')"
+            :aria-label="t('nav.deconnexion')"
             @click="seDeconnecter"
         >
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">

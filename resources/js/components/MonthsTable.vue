@@ -1,8 +1,11 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import { heures, nomMois, nombre, pourcentage } from '@/utils/format';
+import ObjectifBadge from '@/components/ObjectifBadge.vue';
 
 /** Vue tabulaire des mois : la version accessible et imprimable du graphique. */
 defineProps({ mensuelles: { type: Array, default: () => [] } });
+const { t } = useI18n();
 </script>
 
 <template>
@@ -10,17 +13,17 @@ defineProps({ mensuelles: { type: Array, default: () => [] } });
         <table class="w-full text-sm">
             <thead>
                 <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted">
-                    <th class="py-2 pr-3 font-medium">Mois</th>
-                    <th class="py-2 pr-3 text-right font-medium">Total</th>
-                    <th class="py-2 pr-3 text-right font-medium">Congés + maladie</th>
-                    <th class="py-2 pr-3 text-right font-medium">Dispo EPI</th>
-                    <th class="py-2 pr-3 text-right font-medium">Formation + supervision</th>
-                    <th class="py-2 pr-3 text-right font-medium">Interne</th>
-                    <th class="py-2 pr-3 text-right font-medium">Dispo client</th>
-                    <th class="py-2 pr-3 text-right font-medium">Facturables</th>
-                    <th class="py-2 pr-3 text-right font-medium">Forfaits</th>
-                    <th class="py-2 pr-3 text-right font-medium">Efficacité</th>
-                    <th class="py-2 font-medium">Objectif</th>
+                    <th class="py-2 pr-3 font-medium">{{ t('table.mois') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.total') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.congesMaladie') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.dispoEpi') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.formationSupervision') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.interne') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.dispoClient') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.facturables') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.forfaits') }}</th>
+                    <th class="py-2 pr-3 text-right font-medium">{{ t('table.efficacite') }}</th>
+                    <th class="py-2 font-medium">{{ t('table.objectif') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,15 +38,7 @@ defineProps({ mensuelles: { type: Array, default: () => [] } });
                     <td class="py-2 pr-3 text-right tabular-nums">{{ heures(m.minutes_prestations_facturables) }}</td>
                     <td class="py-2 pr-3 text-right tabular-nums text-ink-secondary">{{ nombre(m.nb_prestations) }}</td>
                     <td class="py-2 pr-3 text-right font-semibold tabular-nums text-ink">{{ pourcentage(m.ratio) }}</td>
-                    <td class="py-2">
-                        <span v-if="m.objectif_atteint === true" class="inline-flex items-center gap-1 rounded-full bg-good/15 px-2 py-0.5 text-xs font-medium text-good">
-                            <span aria-hidden="true">✓</span> atteint
-                        </span>
-                        <span v-else-if="m.objectif_atteint === false" class="inline-flex items-center gap-1 rounded-full bg-bad/15 px-2 py-0.5 text-xs font-medium text-bad">
-                            <span aria-hidden="true">✕</span> non atteint
-                        </span>
-                        <span v-else class="text-xs text-ink-muted">non calculable</span>
-                    </td>
+                    <td class="py-2"><ObjectifBadge :atteint="m.objectif_atteint" /></td>
                 </tr>
             </tbody>
         </table>

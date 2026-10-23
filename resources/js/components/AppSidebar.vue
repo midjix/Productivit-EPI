@@ -1,21 +1,22 @@
 <script setup>
 import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 
 defineProps({ ouvert: { type: Boolean, default: false } });
 defineEmits(['fermer']);
 
 const auth = useAuthStore();
-
-const LIBELLES_ROLE = { salarie: 'Salarié', coordinateur: 'Coordinateur', administrateur: 'Administrateur' };
+const { t } = useI18n();
 
 /** Entrées du menu, filtrées par rôle (héritage : un administrateur voit tout). */
 const entrees = computed(() => [
-    { nom: 'tableau-de-bord', libelle: 'Tableau de bord', icone: 'home' },
-    { nom: 'service', libelle: 'Mon service', icone: 'users', role: 'coordinateur' },
-    { nom: 'globales', libelle: 'Vue globale', icone: 'globe', role: 'administrateur' },
-    { nom: 'administration', libelle: 'Administration', icone: 'cog', role: 'administrateur' },
-    { nom: 'mot-de-passe', libelle: 'Changer mon mot de passe', icone: 'key' },
+    { nom: 'tableau-de-bord', libelle: t('nav.tableauDeBord'), icone: 'home' },
+    { nom: 'service', libelle: t('nav.monService'), icone: 'users', role: 'coordinateur' },
+    { nom: 'globales', libelle: t('nav.vueGlobale'), icone: 'globe', role: 'administrateur' },
+    { nom: 'administration', libelle: t('nav.administration'), icone: 'cog', role: 'administrateur' },
+    { nom: 'mot-de-passe', libelle: t('nav.motDePasse'), icone: 'key' },
 ].filter((e) => !e.role || auth.aRole(e.role)));
 
 const ICONES = {
@@ -40,15 +41,15 @@ const ICONES = {
                 <div class="flex h-24 w-24 items-center justify-center rounded-full bg-white text-3xl font-semibold text-epi-anthracite shadow-md">
                     {{ auth.initiales || '?' }}
                 </div>
-                <span class="absolute bottom-1 right-1 h-5 w-5 rounded-full border-2 border-role bg-good" title="Connecté" />
+                <span class="absolute bottom-1 right-1 h-5 w-5 rounded-full border-2 border-role bg-good" :title="t('nav.connecte')" />
             </div>
             <p class="mt-4 max-w-full truncate text-center text-lg font-medium">{{ auth.utilisateur?.name ?? '' }}</p>
-            <p class="text-sm text-role-ink-muted">{{ LIBELLES_ROLE[auth.role] ?? '' }}</p>
+            <p class="text-sm text-role-ink-muted">{{ t(`roles.${auth.role}`) }}</p>
             <p v-if="auth.utilisateur?.service" class="text-xs text-role-ink-muted">{{ auth.utilisateur.service.nom }}</p>
             <div class="mt-5 h-px w-40 bg-white/50" />
         </div>
 
-        <nav class="flex-1" aria-label="Navigation principale">
+        <nav class="flex-1" :aria-label="t('nav.principale')">
             <RouterLink
                 v-for="e in entrees"
                 :key="e.nom"
@@ -63,6 +64,9 @@ const ICONES = {
             </RouterLink>
         </nav>
 
-        <p class="px-5 py-4 text-xs text-role-ink-muted">Fondation EPI · Suivi d'efficacité</p>
+        <div class="px-5 py-3 sm:hidden">
+            <LanguageSwitcher />
+        </div>
+        <p class="px-5 py-4 text-xs text-role-ink-muted">{{ t('app.pied') }}</p>
     </aside>
 </template>

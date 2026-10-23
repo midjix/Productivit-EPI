@@ -1,9 +1,12 @@
 <script setup>
 import { ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
+import { titreDocument } from '@/router';
 import AppHeader from '@/components/AppHeader.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
+import ToastList from '@/components/ToastList.vue';
 
 /**
  * Gabarit des écrans connectés, organisé comme DSKnet : bandeau en haut (logo, titre
@@ -12,16 +15,22 @@ import AppSidebar from '@/components/AppSidebar.vue';
  */
 const auth = useAuthStore();
 const route = useRoute();
+const { t, locale } = useI18n();
 const menuOuvert = ref(false);
 
 watch(() => route.fullPath, () => {
     menuOuvert.value = false;
 });
+
+// Le titre de l'onglet suit la langue.
+watch(locale, () => {
+    document.title = titreDocument(route.meta.titre);
+});
 </script>
 
 <template>
     <div :data-role="auth.role" class="flex min-h-screen flex-col bg-surface-muted">
-        <AppHeader :titre="route.meta.titre ?? ''" @basculer-menu="menuOuvert = !menuOuvert" />
+        <AppHeader :titre="route.meta.titre ? t(`titres.${route.meta.titre}`) : ''" @basculer-menu="menuOuvert = !menuOuvert" />
 
         <div class="flex flex-1">
             <AppSidebar :ouvert="menuOuvert" @fermer="menuOuvert = false" />
@@ -30,5 +39,7 @@ watch(() => route.fullPath, () => {
                 <RouterView :key="route.fullPath" />
             </main>
         </div>
+
+        <ToastList />
     </div>
 </template>

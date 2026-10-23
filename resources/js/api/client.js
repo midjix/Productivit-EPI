@@ -13,11 +13,19 @@ const client = axios.create({
     timeout: 20000,
 });
 
+let lireLangue = () => 'fr';
+
+/** Branche la langue courante (module i18n) : l'API répond dans la même langue que l'interface. */
+export function definirLangue(getter) {
+    lireLangue = getter;
+}
+
 client.interceptors.request.use((config) => {
     const jeton = lireJeton();
     if (jeton) {
         config.headers.Authorization = `Bearer ${jeton}`;
     }
+    config.headers['Accept-Language'] = lireLangue();
     return config;
 });
 
@@ -60,8 +68,11 @@ export function ecrireJeton(jeton) {
     }
 }
 
-/** Message lisible à partir d'une erreur axios (validation 422, 403, réseau…). */
-export function messageErreur(erreur, defaut = 'Une erreur est survenue, veuillez réessayer.') {
+/**
+ * Message lisible à partir d'une erreur axios : message de l'API (déjà dans la langue
+ * demandée), sinon `reseau` ou `defaut` fournis par l'appelant (textes traduits).
+ */
+export function messageErreur(erreur, defaut = 'Une erreur est survenue, veuillez réessayer.', reseau = 'Le serveur est injoignable. Vérifiez votre connexion.') {
     const data = erreur?.response?.data;
     if (data?.errors) {
         const premier = Object.values(data.errors).flat()[0];
@@ -69,7 +80,7 @@ export function messageErreur(erreur, defaut = 'Une erreur est survenue, veuille
     }
     if (data?.message) return data.message;
     if (erreur?.code === 'ECONNABORTED' || erreur?.message === 'Network Error') {
-        return 'Le serveur est injoignable. Vérifiez votre connexion.';
+        return reseau;
     }
     return defaut;
 }

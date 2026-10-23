@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import client, { messageErreur } from '@/api/client';
 import { useAuthStore } from '@/stores/auth';
 import { heuresDecimales, nombre, pourcentage } from '@/utils/format';
@@ -22,6 +23,7 @@ const props = defineProps({ id: { type: String, default: null } });
 const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
+const { t } = useI18n();
 
 const anneeCourante = new Date().getFullYear();
 const annee = ref(Number(route.query.annee) || anneeCourante);
@@ -45,8 +47,8 @@ async function charger() {
     } catch (e) {
         donnees.value = null;
         erreur.value = e.response?.status === 403
-            ? "Vous n'avez pas accès aux données de ce salarié."
-            : messageErreur(e);
+            ? t('dashboard.accesRefuse')
+            : messageErreur(e, t('erreurs.generique'), t('erreurs.reseau'));
     } finally {
         chargement.value = false;
     }
@@ -67,7 +69,7 @@ onMounted(charger);
             <div class="mx-auto max-w-6xl">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <h2 class="text-base font-medium uppercase tracking-wide text-role-ink-muted">
-                        {{ estMoi ? 'Mon efficacité' : `Efficacité de ${donnees?.salarie?.name ?? '…'}` }}
+                        {{ estMoi ? t('dashboard.monEfficacite') : t('dashboard.efficaciteDe', { nom: donnees?.salarie?.name ?? '…' }) }}
                     </h2>
                     <YearPicker v-model="annee" :disponibles="anneesDisponibles" :max="anneeCourante" />
                 </div>
@@ -78,55 +80,53 @@ onMounted(charger);
                     <div class="flex items-center gap-6 rounded-lg bg-white/10 p-5">
                         <RatioRing :ratio="synthese?.ratio ?? null" :objectif="synthese?.objectif ?? '0.7500'" />
                         <div>
-                            <p class="text-sm uppercase tracking-wide text-role-ink-muted">Efficacité {{ annee }}</p>
+                            <p class="text-sm uppercase tracking-wide text-role-ink-muted">{{ t('dashboard.efficacite', { annee }) }}</p>
                             <p class="text-3xl font-semibold">{{ pourcentage(synthese?.ratio) }}</p>
                             <p class="mt-1 text-sm">
-                                Objectif {{ pourcentage(synthese?.objectif, 0) }} —
-                                <span v-if="synthese?.objectif_atteint === true">atteint ✓</span>
-                                <span v-else-if="synthese?.objectif_atteint === false">non atteint</span>
-                                <span v-else>non calculable</span>
+                                {{ t('dashboard.objectif', { valeur: pourcentage(synthese?.objectif, 0) }) }} —
+                                <span v-if="synthese?.objectif_atteint === true">{{ t('dashboard.atteint') }}</span>
+                                <span v-else-if="synthese?.objectif_atteint === false">{{ t('dashboard.nonAtteint') }}</span>
+                                <span v-else>{{ t('dashboard.nonCalculable') }}</span>
                             </p>
-                            <p class="mt-1 text-xs text-role-ink-muted">Efficacité brute : {{ pourcentage(synthese?.ratio_brut) }}</p>
+                            <p class="mt-1 text-xs text-role-ink-muted">{{ t('dashboard.brute', { valeur: pourcentage(synthese?.ratio_brut) }) }}</p>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        <StatTile libelle="Heures totales" :valeur="heuresDecimales(synthese?.minutes_total)" indice="pointage DSK" />
-                        <StatTile libelle="Dispo client" :valeur="heuresDecimales(synthese?.minutes_dispo_client)" indice="après congés, maladie, formation, interne" />
-                        <StatTile libelle="Prestations facturables" :valeur="heuresDecimales(synthese?.minutes_prestations_facturables)" indice="forfaits × barème" />
-                        <StatTile libelle="Forfaits saisis" :valeur="nombre(synthese?.nb_prestations)" :indice="`sur ${synthese?.nb_mois ?? 0} mois`" />
+                        <StatTile :libelle="t('dashboard.heuresTotales')" :valeur="heuresDecimales(synthese?.minutes_total)" :indice="t('dashboard.pointageDsk')" />
+                        <StatTile :libelle="t('dashboard.dispoClient')" :valeur="heuresDecimales(synthese?.minutes_dispo_client)" :indice="t('dashboard.dispoClientIndice')" />
+                        <StatTile :libelle="t('dashboard.facturables')" :valeur="heuresDecimales(synthese?.minutes_prestations_facturables)" :indice="t('dashboard.facturablesIndice')" />
+                        <StatTile :libelle="t('dashboard.forfaits')" :valeur="nombre(synthese?.nb_prestations)" :indice="t('dashboard.surMois', { n: synthese?.nb_mois ?? 0 })" />
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="mx-auto max-w-6xl space-y-4 px-4 py-6 sm:px-6">
-            <UiCard v-if="chargement && !donnees" titre="Chargement…">
-                <p class="text-ink-muted">Lecture des statistiques…</p>
+            <UiCard v-if="chargement && !donnees" :titre="t('dashboard.chargement')">
+                <p class="text-ink-muted">{{ t('dashboard.lecture') }}</p>
             </UiCard>
 
-            <UiCard v-else-if="!erreur && !aDesDonnees" :titre="`Aucune statistique pour ${annee}`">
-                <p class="text-ink-secondary">
-                    Les heures et les prestations sont importées chaque nuit depuis DSK et EpiLogg.
-                    Choisissez une autre année ou revenez après le prochain import.
-                </p>
+            <UiCard v-else-if="!erreur && !aDesDonnees" :titre="t('dashboard.aucune', { annee })">
+                <p class="text-ink-secondary">{{ t('dashboard.aucuneTexte') }}</p>
             </UiCard>
 
             <template v-else-if="!erreur">
-                <UiCard titre="Efficacité par mois" sous-titre="prestations facturables / heures disponibles pour les bénéficiaires">
+                <UiCard :titre="t('dashboard.parMois')" :sous-titre="t('dashboard.parMoisSousTitre')">
                     <MonthlyChart :mensuelles="mensuelles" :objectif="synthese?.objectif ?? '0.7500'" />
                 </UiCard>
 
-                <UiCard titre="Détail des mois" sous-titre="en heures ; l'objectif est évalué mois par mois">
+                <UiCard :titre="t('dashboard.detail')" :sous-titre="t('dashboard.detailSousTitre')">
                     <MonthsTable :mensuelles="mensuelles" />
                 </UiCard>
 
-                <UiCard titre="Comment est calculée l'efficacité ?">
-                    <ol class="list-decimal space-y-1 pl-5 text-sm text-ink-secondary">
-                        <li><strong class="text-ink">Heures totales</strong> : toutes les heures pointées dans DSK (normales, congés, maladie, formation, supervision).</li>
-                        <li><strong class="text-ink">Dispo EPI</strong> = heures totales − congés − maladie.</li>
-                        <li><strong class="text-ink">Dispo client</strong> = dispo EPI − formation − supervision − activité interne (comités, coordination…).</li>
-                        <li><strong class="text-ink">Efficacité</strong> = prestations facturables (forfaits EpiLogg × barème en vigueur) / dispo client. Objectif de la Fondation : 75 %.</li>
+                <UiCard :titre="t('dashboard.comment')">
+                    <ol class="list-decimal space-y-1 pl-5 text-sm text-ink-secondary [&_strong]:text-ink">
+                        <!-- Textes traduits contenant uniquement des balises <strong> maîtrisées (fichiers de langue du projet). -->
+                        <li v-html="t('dashboard.etape1')" />
+                        <li v-html="t('dashboard.etape2')" />
+                        <li v-html="t('dashboard.etape3')" />
+                        <li v-html="t('dashboard.etape4', { objectif: pourcentage(synthese?.objectif ?? '0.75', 0) })" />
                     </ol>
                 </UiCard>
             </template>

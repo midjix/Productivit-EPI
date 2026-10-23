@@ -1,8 +1,10 @@
 <script setup>
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import { messageErreur } from '@/api/client';
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 
 /**
  * Page de connexion : même organisation que DSKnet (carte centrée, logo en tête,
@@ -12,6 +14,7 @@ import { messageErreur } from '@/api/client';
 const auth = useAuthStore();
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 
 const LOGO = '/images/logo-epi.png';
 const email = ref('');
@@ -27,8 +30,8 @@ async function seConnecter() {
         router.push(cible);
     } catch (e) {
         erreur.value = e.response?.status === 429
-            ? 'Trop de tentatives : patientez une minute avant de réessayer.'
-            : messageErreur(e, 'Connexion impossible.');
+            ? t('connexion.tropDeTentatives')
+            : messageErreur(e, t('connexion.impossible'), t('erreurs.reseau'));
         password.value = '';
     }
 }
@@ -40,6 +43,10 @@ async function seConnecter() {
         <div class="pointer-events-none absolute -left-40 top-0 h-[140%] w-[55%] -rotate-12 bg-white/10" aria-hidden="true" />
         <div class="pointer-events-none absolute -right-52 bottom-0 h-[140%] w-[45%] -rotate-12 bg-black/10" aria-hidden="true" />
 
+        <div class="absolute right-4 top-4 rounded-md bg-white/90 px-1 text-ink">
+            <LanguageSwitcher />
+        </div>
+
         <div class="relative w-full max-w-sm overflow-hidden rounded-xl bg-surface-raised shadow-2xl">
             <div class="flex flex-col items-center bg-white px-6 pb-6 pt-7">
                 <img :src="LOGO" alt="Fondation EPI" class="h-24 w-auto" />
@@ -47,7 +54,7 @@ async function seConnecter() {
 
             <form class="space-y-4 px-6 pb-6 pt-5" novalidate @submit.prevent="seConnecter">
                 <div>
-                    <label for="email" class="mb-1 block text-sm text-ink-secondary">Identifiant (email)</label>
+                    <label for="email" class="mb-1 block text-sm text-ink-secondary">{{ t('connexion.identifiant') }}</label>
                     <input
                         id="email"
                         v-model="email"
@@ -56,12 +63,12 @@ async function seConnecter() {
                         autocomplete="username"
                         required
                         class="w-full rounded-md border border-border bg-surface px-3 py-2.5 text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
-                        placeholder="prenom.nom@fondationepi.lu"
+                        :placeholder="t('connexion.placeholder')"
                     />
                 </div>
 
                 <div>
-                    <label for="password" class="mb-1 block text-sm text-ink-secondary">Mot de passe</label>
+                    <label for="password" class="mb-1 block text-sm text-ink-secondary">{{ t('connexion.motDePasse') }}</label>
                     <div class="relative">
                         <input
                             id="password"
@@ -75,7 +82,7 @@ async function seConnecter() {
                         <button
                             type="button"
                             class="absolute inset-y-0 right-0 px-3 text-ink-muted hover:text-accent"
-                            :aria-label="afficher ? 'Masquer le mot de passe' : 'Afficher le mot de passe'"
+                            :aria-label="afficher ? t('connexion.masquer') : t('connexion.afficher')"
                             @click="afficher = !afficher"
                         >
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
@@ -94,17 +101,15 @@ async function seConnecter() {
                     :disabled="auth.chargement"
                     class="w-full rounded-full bg-accent px-4 py-3 font-semibold uppercase tracking-wide text-white shadow-md transition hover:bg-accent-strong disabled:cursor-wait disabled:opacity-70"
                 >
-                    {{ auth.chargement ? 'Connexion…' : 'Se connecter' }}
+                    {{ auth.chargement ? t('connexion.enCours') : t('connexion.bouton') }}
                 </button>
 
-                <p class="text-center text-sm text-ink-muted">
-                    Mot de passe oublié ? Adressez-vous à l'administrateur de l'application.
-                </p>
+                <p class="text-center text-sm text-ink-muted">{{ t('connexion.oubli') }}</p>
             </form>
 
             <div class="flex items-center justify-between bg-epi-anthracite px-6 py-3 text-xs text-white/90">
-                <span>Fondation EPI</span>
-                <span>Suivi d'efficacité · MVP</span>
+                <span>{{ t('app.fondation') }}</span>
+                <span>{{ t('app.mvp') }}</span>
             </div>
         </div>
     </div>
