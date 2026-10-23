@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\CompteDskController;
+use App\Http\Controllers\Api\Admin\ImportController;
+use App\Http\Controllers\Api\Admin\RecalculController;
+use App\Http\Controllers\Api\Admin\ServiceAdminController;
+use App\Http\Controllers\Api\Admin\TarifController;
+use App\Http\Controllers\Api\Admin\TypeSuiviController;
+use App\Http\Controllers\Api\Admin\UtilisateurController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\StatistiqueController;
@@ -45,5 +52,28 @@ Route::middleware('auth:sanctum')->group(function () {
     // Administrateur — vue « Total EPI ».
     Route::middleware('role:administrateur')->group(function () {
         Route::get('/statistiques/globales', [StatistiqueController::class, 'globale'])->name('api.statistiques.globales');
+    });
+
+    // Administration (role:administrateur) : supervision des imports, recalcul,
+    // qualification des référentiels, matrice de conversion, organigramme.
+    Route::middleware('role:administrateur')->prefix('admin')->name('api.admin.')->group(function () {
+        Route::get('/imports', [ImportController::class, 'index'])->name('imports.index');
+        Route::post('/imports', [ImportController::class, 'store'])->name('imports.store');
+        Route::get('/imports/{import}', [ImportController::class, 'show'])->whereNumber('import')->name('imports.show');
+        Route::post('/recalculs', [RecalculController::class, 'store'])->name('recalculs.store');
+
+        Route::get('/comptes-dsk', [CompteDskController::class, 'index'])->name('comptes-dsk.index');
+        Route::patch('/comptes-dsk/{compte}', [CompteDskController::class, 'update'])->whereNumber('compte')->name('comptes-dsk.update');
+        Route::get('/types-suivi', [TypeSuiviController::class, 'index'])->name('types-suivi.index');
+        Route::patch('/types-suivi/{type}', [TypeSuiviController::class, 'update'])->whereNumber('type')->name('types-suivi.update');
+
+        Route::get('/tarifs', [TarifController::class, 'index'])->name('tarifs.index');
+        Route::post('/tarifs/{tarif}/regles', [TarifController::class, 'storeRegle'])->whereNumber('tarif')->name('tarifs.regles.store');
+
+        Route::get('/services', [ServiceAdminController::class, 'index'])->name('services.index');
+        Route::patch('/services/{service}', [ServiceAdminController::class, 'update'])->whereNumber('service')->name('services.update');
+        Route::get('/utilisateurs', [UtilisateurController::class, 'index'])->name('utilisateurs.index');
+        Route::patch('/utilisateurs/{utilisateur}', [UtilisateurController::class, 'update'])->whereNumber('utilisateur')->name('utilisateurs.update');
+        Route::put('/utilisateurs/{utilisateur}/mot-de-passe', [UtilisateurController::class, 'definirMotDePasse'])->whereNumber('utilisateur')->name('utilisateurs.mot-de-passe');
     });
 });
