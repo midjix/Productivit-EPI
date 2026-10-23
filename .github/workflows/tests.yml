@@ -24,11 +24,15 @@ jobs:
           MYSQL_PASSWORD: password
         ports:
           - 3306:3306
+        # Sur un runner froid, l'initialisation d'InnoDB peut dépasser 50 s : délai de
+        # grâce + 12 tentatives (≈ 2 min) pour ne pas échouer avant même de tester
+        # (run 39931178359 du 23/10/2026 : « Initialize containers » en échec, tests non lancés).
         options: >-
           --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-start-period=20s
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=12
 
     # root : le test du connecteur EpiLogg crée une base dédiée `testing_epilogg`
     # (reproduction du schéma réel), ce que l'utilisateur applicatif n'a pas le droit de faire.
