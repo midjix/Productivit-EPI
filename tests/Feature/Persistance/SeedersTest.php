@@ -56,6 +56,7 @@ class SeedersTest extends TestCase
 
         $this->assertSame(1, User::where('role', 'administrateur')->count());
         $this->assertSame(4, User::where('role', 'coordinateur')->count());
+        $this->assertSame(4, User::where('email', 'like', 'salarie.%@epi.test')->where('role', 'salarie')->count(), 'un salarié de démo à adresse fixe par service');
         $this->assertTrue(User::where('actif', false)->whereNotNull('date_sortie')->exists(), 'un salarié parti');
         $this->assertTrue(User::where('actif', true)->whereNull('epilogg_user_id')->exists(), 'un salarié sans correspondance EpiLogg');
         $this->assertSame(1, CategorieSuivi::nonQualifies()->count(), 'un type de suivi non qualifié');

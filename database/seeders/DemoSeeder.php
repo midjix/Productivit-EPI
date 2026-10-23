@@ -28,8 +28,9 @@ use Illuminate\Support\Facades\DB;
  *
  * Comptes de démonstration (mot de passe : `password`) :
  *   admin@epi.test                → Administrateur
- *   coord.<service>@epi.test      → Coordinateur du service
- *   <prenom>.<nom>@epi.test       → Salariés
+ *   coord.<service>@epi.test      → Coordinateur du service (followup, aisp, psy, logement)
+ *   salarie.<service>@epi.test    → un Salarié du service, adresse fixe
+ *   autres salariés               → adresses fictives aléatoires
  *
  * Relancer le seeder repart d'une base vide (les données de démo sont jetables).
  */
@@ -149,7 +150,13 @@ class DemoSeeder extends Seeder
                 'service_id' => $service->id,
             ]);
 
-            foreach (User::factory()->count($nb)->create(['service_id' => $service->id]) as $u) {
+            // Un salarié de démonstration à l'adresse fixe par service : salarie.<service>@epi.test
+            $salaries[] = User::factory()->create([
+                'email' => 'salarie.'.strtolower($code).'@epi.test',
+                'service_id' => $service->id,
+            ]);
+
+            foreach (User::factory()->count($nb - 1)->create(['service_id' => $service->id]) as $u) {
                 $salaries[] = $u;
             }
         }
