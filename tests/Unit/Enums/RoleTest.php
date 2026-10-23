@@ -5,9 +5,12 @@ namespace Tests\Unit\Enums;
 use App\Enums\Role;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
-/** Héritage de droits : Administrateur ⊃ Coordinateur ⊃ Salarié. */
+/**
+ * Héritage de droits : Administrateur ⊃ Coordinateur ⊃ Salarié.
+ * Étend Tests\TestCase : label() lit les traductions (conteneur nécessaire).
+ */
 class RoleTest extends TestCase
 {
     #[Test]

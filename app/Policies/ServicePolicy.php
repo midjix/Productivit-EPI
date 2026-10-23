@@ -22,6 +22,6 @@ class ServicePolicy
             return Response::allow();
         }
 
-        return Response::deny("Vous n'avez pas accès aux statistiques de ce service.");
+        return Response::deny(__('epi.policies.service'));
     }
 }

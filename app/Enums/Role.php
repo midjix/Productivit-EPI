@@ -32,10 +32,6 @@ enum Role: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Salarie => 'Salarié',
-            self::Coordinateur => 'Coordinateur',
-            self::Administrateur => 'Administrateur',
-        };
+        return __('epi.roles.'.$this->value);
     }
 }

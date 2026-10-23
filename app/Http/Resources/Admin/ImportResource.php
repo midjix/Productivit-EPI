@@ -30,7 +30,7 @@ class ImportResource extends JsonResource
             'nb_lignes' => $this->nb_lignes,
             'resume' => is_array($resume) ? $resume : null,
             'erreur' => $this->statut === StatutImport::Echec ? $this->message : null,
-            'declencheur' => $this->declencheur?->name ?? 'Planificateur',
+            'declencheur' => $this->declencheur?->name ?? __('epi.planificateur'),
             'demarre_le' => $this->demarre_le?->toIso8601String(),
             'termine_le' => $this->termine_le?->toIso8601String(),
             'duree_secondes' => $this->termine_le !== null && $this->demarre_le !== null

@@ -31,7 +31,7 @@ class MatriceConversionService
         ?string $commentaire = null,
     ): RegleConversion {
         if ($minutes <= 0) {
-            throw new InvalidArgumentException('La valeur d\'un forfait doit être strictement positive.');
+            throw new InvalidArgumentException(__('epi.matrice.minutes_positives'));
         }
 
         $debut = CarbonImmutable::parse($dateDebut)->startOfDay();
@@ -42,11 +42,10 @@ class MatriceConversionService
 
             if ($ouverte !== null) {
                 if ($debut->lte($ouverte->date_debut_validite)) {
-                    throw new InvalidArgumentException(sprintf(
-                        'La date d\'application (%s) doit être postérieure au début de la règle en vigueur (%s).',
-                        $debut->toDateString(),
-                        $ouverte->date_debut_validite->toDateString(),
-                    ));
+                    throw new InvalidArgumentException(__('epi.matrice.date_posterieure', [
+                        'date' => $debut->toDateString(),
+                        'debut' => $ouverte->date_debut_validite->toDateString(),
+                    ]));
                 }
 
                 $ouverte->update(['date_fin_validite' => $debut->subDay()]);

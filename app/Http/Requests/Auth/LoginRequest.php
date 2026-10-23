@@ -2,11 +2,14 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 
 /** Validation serveur systématique des entrées (AT1) : rien n'atteint le contrôleur sans passer ici. */
 class LoginRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;

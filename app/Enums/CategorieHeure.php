@@ -28,15 +28,7 @@ enum CategorieHeure: string
 
     public function label(): string
     {
-        return match ($this) {
-            self::Normal => 'Heures normales',
-            self::Conge => 'Congés et récupérations',
-            self::Maladie => 'Maladie',
-            self::Formation => 'Formation',
-            self::Supervision => 'Supervision',
-            self::Deplacement => 'Déplacements',
-            self::Autre => 'Autre',
-        };
+        return __('epi.categories_heures.'.$this->value);
     }
 
     /** Colonne du cache `statistiques_mensuelles` alimentée par cette catégorie. */

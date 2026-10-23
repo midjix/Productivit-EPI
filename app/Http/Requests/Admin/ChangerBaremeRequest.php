@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -11,6 +12,8 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class ChangerBaremeRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;

@@ -18,10 +18,10 @@ class EnsureRole
 {
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        $requis = Role::tryFrom($role) ?? abort(500, "Rôle inconnu dans la définition de route : {$role}");
+        $requis = Role::tryFrom($role) ?? abort(500, __('epi.auth.role_inconnu', ['role' => $role]));
 
         if (! $request->user()?->aRole($requis)) {
-            abort(403, 'Droits insuffisants pour cette action.');
+            abort(403, __('epi.auth.droits_insuffisants'));
         }
 
         return $next($request);

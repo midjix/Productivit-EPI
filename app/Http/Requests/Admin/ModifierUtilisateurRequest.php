@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Enums\Role;
 use App\Models\User;
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -15,6 +16,8 @@ use Illuminate\Validation\Validator;
  */
 class ModifierUtilisateurRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;
@@ -46,11 +49,11 @@ class ModifierUtilisateurRequest extends FormRequest
                 }
 
                 if ($this->has('role') && $this->input('role') !== Role::Administrateur->value) {
-                    $validator->errors()->add('role', 'Vous ne pouvez pas modifier votre propre rôle.');
+                    $validator->errors()->add('role', __('epi.admin.propre_role'));
                 }
 
                 if ($this->has('actif') && ! $this->boolean('actif')) {
-                    $validator->errors()->add('actif', 'Vous ne pouvez pas désactiver votre propre compte.');
+                    $validator->errors()->add('actif', __('epi.admin.propre_compte'));
                 }
             },
         ];

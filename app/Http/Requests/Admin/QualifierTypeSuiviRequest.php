@@ -2,12 +2,15 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /** Qualification d'un type de suivi EpiLogg : tarif (porte le barème), service de rattachement, activité. */
 class QualifierTypeSuiviRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;

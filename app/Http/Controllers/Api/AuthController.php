@@ -29,12 +29,12 @@ class AuthController extends Controller
         // on ne révèle pas quelles adresses existent (énumération de comptes).
         if ($user === null || ! Hash::check($request->string('password'), $user->password)) {
             throw ValidationException::withMessages([
-                'email' => __('Identifiants incorrects.'),
+                'email' => __('epi.auth.identifiants_incorrects'),
             ]);
         }
 
         if (! $user->peutSeConnecter()) {
-            abort(403, 'Ce compte est désactivé.');
+            abort(403, __('epi.auth.compte_desactive'));
         }
 
         $token = $user->createToken($request->string('device_name', 'spa')->toString());

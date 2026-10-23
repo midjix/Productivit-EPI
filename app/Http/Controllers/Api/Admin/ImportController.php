@@ -51,7 +51,7 @@ class ImportController extends Controller
         ImporterSourcesJob::dispatch($request->source(), $du, $au, $request->user()->id);
 
         return response()->json([
-            'message' => 'Import mis en file d\'attente.',
+            'message' => __('epi.admin.import_en_file'),
             'source' => $request->source(),
             'du' => $du->toDateString(),
             'au' => $au->toDateString(),

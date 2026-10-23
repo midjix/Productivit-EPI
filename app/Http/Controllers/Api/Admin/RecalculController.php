@@ -20,13 +20,13 @@ class RecalculController extends Controller
         $au = $request->au() ?? $auDonnees ?? CarbonImmutable::today();
 
         if ($du === null) {
-            return response()->json(['message' => 'Aucune donnée importée : rien à recalculer.'], 200);
+            return response()->json(['message' => __('epi.admin.rien_a_recalculer')], 200);
         }
 
         RecalculerStatistiquesJob::dispatch($du, $au);
 
         return response()->json([
-            'message' => 'Recalcul mis en file d\'attente.',
+            'message' => __('epi.admin.recalcul_en_file'),
             'du' => $du->toDateString(),
             'au' => $au->toDateString(),
         ], 202);

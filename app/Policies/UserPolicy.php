@@ -26,6 +26,6 @@ class UserPolicy
             return Response::allow();
         }
 
-        return Response::deny("Vous n'avez pas accès aux données de ce salarié.");
+        return Response::deny(__('epi.policies.salarie'));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -13,6 +14,8 @@ use Illuminate\Foundation\Http\FormRequest;
  */
 class PeriodeRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     /** L'autorisation (qui voit quoi) est portée par les policies, pas par la requête. */
     public function authorize(): bool
     {

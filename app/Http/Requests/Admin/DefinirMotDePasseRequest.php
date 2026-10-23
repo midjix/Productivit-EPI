@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -11,6 +12,8 @@ use Illuminate\Validation\Rules\Password;
  */
 class DefinirMotDePasseRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;

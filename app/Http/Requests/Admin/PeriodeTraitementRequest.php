@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Carbon\CarbonImmutable;
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -13,6 +14,8 @@ use Illuminate\Validation\Rule;
  */
 class PeriodeTraitementRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;

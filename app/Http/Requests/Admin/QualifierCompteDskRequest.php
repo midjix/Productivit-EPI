@@ -3,12 +3,15 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\CategorieHeure;
+use App\Http\Requests\Concerns\ChampsTraduits;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /** Qualification d'un compteur DSK : catégorie d'heures, prise en compte dans le total, activité. */
 class QualifierCompteDskRequest extends FormRequest
 {
+    use ChampsTraduits;
+
     public function authorize(): bool
     {
         return true;
