@@ -30,9 +30,5 @@ export default defineConfig({
             ignored: ['**/storage/framework/views/**'],
         },
     },
-    test: {
-        environment: 'jsdom',
-        include: ['resources/js/**/*.test.js'],
-        globals: true,
-    },
+    // Tests : voir vitest.config.js (sans le plugin Laravel).
 });
