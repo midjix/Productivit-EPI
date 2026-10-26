@@ -40,6 +40,20 @@
     --status-good: #2e7d32;
     --status-bad: #c62828;
 
+    /* Couleurs catégorielles (écran Détail) : catégories d'heures DSK selon leur rôle dans la cascade,
+       et palette des tarifs facturables (le premier tarif garde l'orange de la charte). */
+    --cat-normal: #575756;
+    --cat-conge: #c96e00;
+    --cat-maladie: #c62828;
+    --cat-formation: #1565c0;
+    --cat-supervision: #6a1b9a;
+    --cat-autre: #8a8884;
+    --tarif-1: #f39200;
+    --tarif-2: #00897b;
+    --tarif-3: #5c6bc0;
+    --tarif-4: #8e24aa;
+    --tarif-interne: #8a8884;
+
     /* Rôle par défaut (salarié) */
     --role: var(--epi-orange);
     --role-strong: #d97b00;
@@ -64,6 +78,16 @@
         --chart-grid: #3a3a38;
         --status-good: #66bb6a;
         --status-bad: #ef5350;
+        --cat-normal: #c9c6bf;
+        --cat-conge: #f0a030;
+        --cat-maladie: #ef5350;
+        --cat-formation: #64b5f6;
+        --cat-supervision: #ba68c8;
+        --cat-autre: #9a978f;
+        --tarif-2: #4db6ac;
+        --tarif-3: #9fa8da;
+        --tarif-4: #ce93d8;
+        --tarif-interne: #9a978f;
         color-scheme: dark;
     }
 }
@@ -82,6 +106,16 @@
     --chart-grid: #3a3a38;
     --status-good: #66bb6a;
     --status-bad: #ef5350;
+    --cat-normal: #c9c6bf;
+    --cat-conge: #f0a030;
+    --cat-maladie: #ef5350;
+    --cat-formation: #64b5f6;
+    --cat-supervision: #ba68c8;
+    --cat-autre: #9a978f;
+    --tarif-2: #4db6ac;
+    --tarif-3: #9fa8da;
+    --tarif-4: #ce93d8;
+    --tarif-interne: #9a978f;
     color-scheme: dark;
 }
 
@@ -123,6 +157,18 @@
     --color-epi-ocre: var(--epi-ocre);
     --color-epi-anthracite: var(--epi-anthracite);
     --color-epi-beige: var(--epi-beige);
+    --color-cat-normal: var(--cat-normal);
+    --color-cat-conge: var(--cat-conge);
+    --color-cat-maladie: var(--cat-maladie);
+    --color-cat-formation: var(--cat-formation);
+    --color-cat-supervision: var(--cat-supervision);
+    --color-cat-deplacement: var(--cat-normal);
+    --color-cat-autre: var(--cat-autre);
+    --color-tarif-1: var(--tarif-1);
+    --color-tarif-2: var(--tarif-2);
+    --color-tarif-3: var(--tarif-3);
+    --color-tarif-4: var(--tarif-4);
+    --color-tarif-interne: var(--tarif-interne);
 }
 
 html,

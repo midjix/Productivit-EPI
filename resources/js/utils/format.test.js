@@ -15,6 +15,16 @@ describe('format (français)', () => {
         expect(heures(null)).toBe('0h00');
     });
 
+    it('sépare les milliers selon la langue', () => {
+        // fr-LU et de-LU groupent par un point (CLDR), en-GB par une virgule : comme `nombre()`.
+        expect(n(heures(675840))).toBe('11.264h00');
+        definirLocaleFormat('en');
+        expect(heures(675840)).toBe('11,264h00');
+        definirLocaleFormat('de');
+        expect(heures(675840)).toBe('11.264h00');
+        expect(heures(7680)).toBe('128h00');
+    });
+
     it('affiche des heures décimales à la française', () => {
         expect(n(heuresDecimales(7680))).toBe('128,0 h');
         expect(n(heuresDecimales('5880.00'))).toBe('98,0 h');

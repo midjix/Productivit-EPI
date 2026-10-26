@@ -17,14 +17,17 @@ export function localeFormat() {
     return localeCourante;
 }
 
-/** 7680 → "128h00" ; "5880.50" → "98h01" (minutes décimales arrondies à la minute). */
+/**
+ * 7680 → "128h00" ; "5880.50" → "98h01" (minutes décimales arrondies à la minute).
+ * Les heures reçoivent le séparateur de milliers de la langue : "11 264h00" (fr), "11,264h00" (en), "11.264h00" (de).
+ */
 export function heures(minutes) {
     const total = Math.round(Number(minutes ?? 0));
     const signe = total < 0 ? '-' : '';
     const abs = Math.abs(total);
     const h = Math.floor(abs / 60);
     const m = abs % 60;
-    return `${signe}${h}h${String(m).padStart(2, '0')}`;
+    return `${signe}${h.toLocaleString(localeCourante)}h${String(m).padStart(2, '0')}`;
 }
 
 /** 7680 → "128,0 h" (fr) / "128.0 h" (en). */
