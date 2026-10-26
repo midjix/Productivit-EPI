@@ -1,8 +1,9 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
+import { useRechercheStore } from '@/stores/recherche';
 import { titreDocument } from '@/router';
 import AppHeader from '@/components/AppHeader.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
@@ -14,9 +15,13 @@ import ToastList from '@/components/ToastList.vue';
  * La couleur du menu dépend du rôle (attribut data-role lu par la feuille de style).
  */
 const auth = useAuthStore();
+const recherche = useRechercheStore();
 const route = useRoute();
 const { t, locale } = useI18n();
 const menuOuvert = ref(false);
+
+// La barre de recherche (coordinateur, administrateur) est prête dès le premier écran.
+onMounted(() => recherche.charger());
 
 watch(() => route.fullPath, () => {
     menuOuvert.value = false;

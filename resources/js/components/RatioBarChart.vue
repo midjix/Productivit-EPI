@@ -18,7 +18,9 @@ const props = defineProps({
     objectif: { type: [String, Number], default: '0.7500' },
     titres: { type: Array, default: () => [] }, // titres complets des infobulles (optionnel)
     horizontal: { type: Boolean, default: false },
+    cliquable: { type: Boolean, default: false }, // un clic sur une barre ou son libellé émet `select` (index)
 });
+const emit = defineEmits(['select']);
 
 const theme = useThemeStore();
 const { t, locale } = useI18n();
@@ -27,6 +29,17 @@ let chart = null;
 
 function couleur(nom) {
     return getComputedStyle(document.documentElement).getPropertyValue(nom).trim();
+}
+
+/** Index de la catégorie (barre ou libellé) sous le curseur, ou null hors de la zone utile. */
+function indexSousLeCurseur(c, evt) {
+    const axe = c.scales[props.horizontal ? 'y' : 'x'];
+    if (!axe || evt?.x == null) return null;
+    const pos = props.horizontal ? evt.y : evt.x;
+    const [debut, fin] = props.horizontal ? [axe.top, axe.bottom] : [axe.left, axe.right];
+    if (pos < debut || pos > fin) return null;
+    const i = Math.round(axe.getValueForPixel(pos));
+    return Number.isInteger(i) && i >= 0 && i < props.labels.length ? i : null;
 }
 
 function construire() {
@@ -77,6 +90,17 @@ function construire() {
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
+            // Barre ou libellé cliquable : l'index est déduit de la position sur l'axe des catégories.
+            onClick: (evt, elements, c) => {
+                if (!props.cliquable) return;
+                const i = elements.length ? elements[0].index : indexSousLeCurseur(c, evt);
+                if (i !== null) emit('select', i);
+            },
+            onHover: (evt, elements, c) => {
+                if (!props.cliquable) return;
+                const i = elements.length ? elements[0].index : indexSousLeCurseur(c, evt);
+                c.canvas.style.cursor = i !== null ? 'pointer' : 'default';
+            },
             scales: {
                 [axeCategorie]: { grid: { display: false }, ticks: { color: encre }, border: { color: grille } },
                 [axeValeur]: {

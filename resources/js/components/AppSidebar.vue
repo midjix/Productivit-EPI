@@ -3,6 +3,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
+import SearchBar from '@/components/SearchBar.vue';
 
 defineProps({ ouvert: { type: Boolean, default: false } });
 defineEmits(['fermer']);
@@ -29,11 +30,12 @@ const ICONES = {
 </script>
 
 <template>
-    <!-- Voile sur petit écran -->
-    <div v-if="ouvert" class="fixed inset-0 z-30 bg-black/40 lg:hidden" @click="$emit('fermer')" />
+    <!-- Voile sur petit écran : sous le bandeau (top-16), qui reste visible -->
+    <div v-if="ouvert" class="fixed inset-x-0 bottom-0 top-16 z-20 bg-black/40 lg:hidden" @click="$emit('fermer')" />
 
+    <!-- Tiroir sur petit écran, colonne fixe à partir de lg ; jamais par-dessus le bandeau -->
     <aside
-        class="fixed inset-y-0 left-0 z-40 flex w-64 flex-col bg-role text-role-ink transition-transform duration-200 lg:static lg:translate-x-0"
+        class="fixed bottom-0 left-0 top-16 z-20 flex w-64 flex-col overflow-y-auto bg-role text-role-ink transition-transform duration-200 lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] lg:translate-x-0"
         :class="ouvert ? 'translate-x-0' : '-translate-x-full'"
     >
         <div class="flex flex-col items-center px-4 pb-6 pt-8">
@@ -66,6 +68,9 @@ const ICONES = {
 
         <div class="px-5 py-3 sm:hidden">
             <LanguageSwitcher />
+        </div>
+        <div v-if="auth.aRole('coordinateur')" class="px-5 pb-3 md:hidden">
+            <SearchBar />
         </div>
         <p class="px-5 py-4 text-xs text-role-ink-muted">{{ t('app.pied') }}</p>
     </aside>

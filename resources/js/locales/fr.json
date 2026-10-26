@@ -12,6 +12,7 @@
         "administration": "Administration",
         "motDePasse": "Changer mon mot de passe",
         "deconnexion": "Se déconnecter",
+        "retour": "Retour",
         "ouvrirMenu": "Ouvrir le menu",
         "accueil": "Accueil",
         "connecte": "Connecté",
@@ -131,6 +132,18 @@
         "mois": "Mois",
         "touteAnnee": "Toute l'année"
     },
+    "recherche": {
+        "placeholder": "Rechercher un salarié…",
+        "placeholderAdmin": "Rechercher un salarié ou un service…",
+        "recentes": "Dernières recherches",
+        "frequentes": "Les plus consultés",
+        "resultats": "Résultats",
+        "aucun": "Aucun résultat.",
+        "chargement": "Chargement de la liste…",
+        "aide": "Tapez un nom de salarié ou de service.",
+        "salarie": "Salarié",
+        "service": "Service"
+    },
     "service": {
         "titre": "Mon service",
         "choisir": "Choisir un service",
@@ -141,12 +154,14 @@
         "parSalarieSousTitre": "sur la période choisie, du plus efficace au moins efficace",
         "detail": "Détail par salarié",
         "salarie": "Salarié",
-        "mois": "Mois"
+        "mois": "Mois",
+        "cliquezSalarie": "Cliquez sur une barre ou un nom pour ouvrir le tableau de bord du salarié."
     },
     "globale": {
         "totalEpi": "Total EPI",
         "parService": "Efficacité par service",
         "parServiceSousTitre": "rapport des totaux de chaque service",
+        "cliquezService": "Cliquez sur une barre ou un nom pour ouvrir les statistiques du service.",
         "detail": "Détail par service",
         "service": "Service",
         "sansService": "Sans service"

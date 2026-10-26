@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\TarifController;
 use App\Http\Controllers\Api\Admin\TypeSuiviController;
 use App\Http\Controllers\Api\Admin\UtilisateurController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\SalarieController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\StatistiqueController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Coordinateur (et Administrateur par héritage) — périmètre contrôlé par ServicePolicy.
     Route::middleware('role:coordinateur')->group(function () {
         Route::get('/services', [ServiceController::class, 'index'])->name('api.services.index');
+        Route::get('/salaries', [SalarieController::class, 'index'])->name('api.salaries.index');
         Route::get('/statistiques/services/{service}', [StatistiqueController::class, 'service'])
             ->whereNumber('service')->name('api.statistiques.service');
     });

@@ -21,6 +21,11 @@ class SalarieResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'service_id' => $this->service_id,
+            'service' => $this->whenLoaded('service', fn () => $this->service === null ? null : [
+                'id' => $this->service->id,
+                'code' => $this->service->code,
+                'nom' => $this->service->nom,
+            ]),
         ];
     }
 }

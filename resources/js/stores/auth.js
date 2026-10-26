@@ -19,6 +19,7 @@ export const useAuthStore = defineStore('auth', {
         estConnecte: (state) => Boolean(state.jeton),
         role: (state) => state.utilisateur?.role ?? 'salarie',
         aRole: (state) => (role) => (NIVEAUX[state.utilisateur?.role] ?? 0) >= (NIVEAUX[role] ?? 99),
+        estAdministrateurRole: (state) => state.utilisateur?.role === 'administrateur',
         initiales: (state) => {
             const nom = state.utilisateur?.name ?? '';
             return nom

@@ -41,6 +41,11 @@ async function charger() {
     }
 }
 
+function ouvrirService(index) {
+    const s = services.value[index];
+    if (s?.service) router.push({ name: 'service-detail', params: { id: s.service.id }, query: { annee: annee.value, ...(mois.value ? { mois: mois.value } : {}) } });
+}
+
 watch([annee, mois], () => {
     router.replace({ query: { annee: annee.value, ...(mois.value ? { mois: mois.value } : {}) } });
     charger();
@@ -76,7 +81,8 @@ onMounted(charger);
 
             <template v-else-if="!erreur && donnees">
                 <UiCard :titre="t('globale.parService')" :sous-titre="t('globale.parServiceSousTitre')">
-                    <RatioBarChart :labels="labels" :valeurs="valeurs" :objectif="synthese?.objectif ?? '0.7500'" horizontal />
+                    <RatioBarChart :labels="labels" :valeurs="valeurs" :objectif="synthese?.objectif ?? '0.7500'" horizontal cliquable @select="ouvrirService" />
+                    <p class="mt-1 text-xs text-ink-muted">{{ t('globale.cliquezService') }}</p>
                 </UiCard>
 
                 <UiCard :titre="t('globale.detail')">

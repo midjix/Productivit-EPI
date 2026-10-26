@@ -12,6 +12,7 @@
         "administration": "Verwaltung",
         "motDePasse": "Passwort ändern",
         "deconnexion": "Abmelden",
+        "retour": "Zurück",
         "ouvrirMenu": "Menü öffnen",
         "accueil": "Startseite",
         "connecte": "Angemeldet",
@@ -131,6 +132,18 @@
         "mois": "Monat",
         "touteAnnee": "Ganzes Jahr"
     },
+    "recherche": {
+        "placeholder": "Mitarbeiter suchen…",
+        "placeholderAdmin": "Mitarbeiter oder Abteilung suchen…",
+        "recentes": "Letzte Suchen",
+        "frequentes": "Am häufigsten aufgerufen",
+        "resultats": "Ergebnisse",
+        "aucun": "Keine Ergebnisse.",
+        "chargement": "Liste wird geladen…",
+        "aide": "Geben Sie einen Mitarbeiter- oder Abteilungsnamen ein.",
+        "salarie": "Mitarb.",
+        "service": "Abt."
+    },
     "service": {
         "titre": "Meine Abteilung",
         "choisir": "Abteilung wählen",
@@ -141,12 +154,14 @@
         "parSalarieSousTitre": "im gewählten Zeitraum, vom effizientesten zum am wenigsten effizienten",
         "detail": "Details pro Mitarbeiter",
         "salarie": "Mitarbeiter",
-        "mois": "Monate"
+        "mois": "Monate",
+        "cliquezSalarie": "Klicken Sie auf einen Balken oder Namen, um das Dashboard des Mitarbeiters zu öffnen."
     },
     "globale": {
         "totalEpi": "Gesamt EPI",
         "parService": "Effizienz pro Abteilung",
         "parServiceSousTitre": "Verhältnis der Summen jeder Abteilung",
+        "cliquezService": "Klicken Sie auf einen Balken oder Namen, um die Statistiken der Abteilung zu öffnen.",
         "detail": "Details pro Abteilung",
         "service": "Abteilung",
         "sansService": "Ohne Abteilung"

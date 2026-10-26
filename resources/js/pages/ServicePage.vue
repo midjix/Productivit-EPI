@@ -65,6 +65,11 @@ async function charger() {
     }
 }
 
+function ouvrirSalarie(index) {
+    const s = trie.value[index];
+    if (s) router.push({ name: 'salarie', params: { id: s.salarie.id }, query: { annee: annee.value } });
+}
+
 watch([annee, mois], () => {
     router.replace({ query: { annee: annee.value, ...(mois.value ? { mois: mois.value } : {}) } });
     charger();
@@ -117,7 +122,8 @@ onMounted(async () => {
 
             <template v-else-if="!erreur && donnees">
                 <UiCard :titre="t('service.parSalarie')" :sous-titre="t('service.parSalarieSousTitre')">
-                    <RatioBarChart :labels="labels" :valeurs="valeurs" :objectif="synthese?.objectif ?? '0.7500'" horizontal />
+                    <RatioBarChart :labels="labels" :valeurs="valeurs" :objectif="synthese?.objectif ?? '0.7500'" horizontal cliquable @select="ouvrirSalarie" />
+                    <p class="mt-1 text-xs text-ink-muted">{{ t('service.cliquezSalarie') }}</p>
                 </UiCard>
 
                 <UiCard :titre="t('service.detail')">

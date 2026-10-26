@@ -12,6 +12,7 @@
         "administration": "Administration",
         "motDePasse": "Change my password",
         "deconnexion": "Sign out",
+        "retour": "Back",
         "ouvrirMenu": "Open the menu",
         "accueil": "Home",
         "connecte": "Signed in",
@@ -131,6 +132,18 @@
         "mois": "Month",
         "touteAnnee": "Whole year"
     },
+    "recherche": {
+        "placeholder": "Search for an employee…",
+        "placeholderAdmin": "Search for an employee or a department…",
+        "recentes": "Recent searches",
+        "frequentes": "Most viewed",
+        "resultats": "Results",
+        "aucun": "No results.",
+        "chargement": "Loading the list…",
+        "aide": "Type an employee or department name.",
+        "salarie": "Employee",
+        "service": "Dept."
+    },
     "service": {
         "titre": "My department",
         "choisir": "Choose a department",
@@ -141,12 +154,14 @@
         "parSalarieSousTitre": "over the selected period, from most to least efficient",
         "detail": "Details by employee",
         "salarie": "Employee",
-        "mois": "Months"
+        "mois": "Months",
+        "cliquezSalarie": "Click a bar or a name to open the employee's dashboard."
     },
     "globale": {
         "totalEpi": "EPI total",
         "parService": "Efficiency by department",
         "parServiceSousTitre": "ratio of each department's totals",
+        "cliquezService": "Click a bar or a name to open the department's statistics.",
         "detail": "Details by department",
         "service": "Department",
         "sansService": "No department"

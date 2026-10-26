@@ -85,8 +85,12 @@ async function seConnecter() {
                             :aria-label="afficher ? t('connexion.masquer') : t('connexion.afficher')"
                             @click="afficher = !afficher"
                         >
-                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <!-- Œil ouvert : le mot de passe est masqué, cliquer l'affiche ; œil barré : il est visible -->
+                            <svg v-if="!afficher" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" /><circle cx="12" cy="12" r="3" />
+                            </svg>
+                            <svg v-else class="h-5 w-5 text-accent-strong" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 3l18 18M10.6 10.6A3 3 0 0 0 13.4 13.4M9.9 5.8A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a16.7 16.7 0 0 1-3.2 3.9M6.6 6.6C4 8.4 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.5 0 2.8-.4 4-1" />
                             </svg>
                         </button>
                     </div>

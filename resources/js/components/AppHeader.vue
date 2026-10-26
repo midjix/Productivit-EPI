@@ -1,22 +1,39 @@
 <script setup>
-import { useRouter } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
+import { useRechercheStore } from '@/stores/recherche';
 import ThemeToggle from '@/components/ThemeToggle.vue';
 import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
+import SearchBar from '@/components/SearchBar.vue';
 
 defineProps({ titre: { type: String, default: '' } });
 defineEmits(['basculer-menu']);
 
 const auth = useAuthStore();
+const recherche = useRechercheStore();
 const router = useRouter();
+const route = useRoute();
 const { t } = useI18n();
 
 // Fichier servi par Laravel depuis public/ (hors pipeline Vite) : chemin lié dynamiquement.
 const LOGO = '/images/logo-epi.png';
 
+/** Bouton « Retour » partout sauf sur le tableau de bord personnel (point de départ). */
+const peutRevenir = computed(() => route.name !== 'tableau-de-bord');
+
+function revenir() {
+    if (window.history.state?.back) {
+        router.back();
+    } else {
+        router.push({ name: 'tableau-de-bord' });
+    }
+}
+
 async function seDeconnecter() {
     await auth.deconnexion();
+    recherche.reinitialiser();
     router.push({ name: 'connexion' });
 }
 </script>
@@ -32,15 +49,34 @@ async function seDeconnecter() {
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" /></svg>
         </button>
 
-        <RouterLink :to="{ name: 'tableau-de-bord' }" class="flex items-center gap-3" :aria-label="t('nav.accueil')">
+        <RouterLink :to="{ name: 'tableau-de-bord' }" class="flex shrink-0 items-center gap-3" :aria-label="t('nav.accueil')">
             <span class="flex h-11 w-11 items-center justify-center overflow-hidden rounded-md bg-white shadow-sm">
                 <img :src="LOGO" alt="Fondation EPI" class="h-10 w-10 object-contain" />
             </span>
         </RouterLink>
 
-        <h1 class="min-w-0 flex-1 truncate text-lg font-medium uppercase tracking-[0.12em] sm:text-xl">
+        <button
+            v-if="peutRevenir"
+            type="button"
+            class="hidden items-center gap-1 rounded-full border border-border px-3 py-1.5 text-sm hover:bg-surface-muted sm:inline-flex"
+            :title="t('nav.retour')"
+            @click="revenir"
+        >
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6" /></svg>
+            <span>{{ t('nav.retour') }}</span>
+        </button>
+        <button v-if="peutRevenir" type="button" class="rounded-md p-2 hover:bg-surface-muted sm:hidden" :aria-label="t('nav.retour')" @click="revenir">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 6l-6 6 6 6" /></svg>
+        </button>
+
+        <h1 class="min-w-0 truncate text-lg font-medium uppercase tracking-[0.12em] sm:text-xl" :class="auth.aRole('coordinateur') ? 'flex-none' : 'flex-1'">
             {{ titre }}
         </h1>
+
+        <div v-if="auth.aRole('coordinateur')" class="hidden min-w-0 flex-1 justify-center px-2 md:flex">
+            <SearchBar />
+        </div>
+        <div v-else class="flex-1" />
 
         <LanguageSwitcher class="hidden sm:flex" />
         <ThemeToggle />
