@@ -37,6 +37,13 @@ const synthese = computed(() => donnees.value?.synthese ?? null);
 const salaries = computed(() => donnees.value?.salaries ?? []);
 const trie = computed(() => [...salaries.value].sort((a, b) => Number(b.synthese.ratio ?? -1) - Number(a.synthese.ratio ?? -1)));
 const labels = computed(() => trie.value.map((s) => s.salarie.name));
+/** Bornes de la période courante (année ou mois) pour l'écran Détail. */
+const periodeDetail = computed(() => {
+    if (!mois.value) return { du: `${annee.value}-01-01`, au: `${annee.value}-12-31` };
+    const dernier = new Date(annee.value, mois.value, 0).getDate();
+    const m = String(mois.value).padStart(2, '0');
+    return { du: `${annee.value}-${m}-01`, au: `${annee.value}-${m}-${dernier}` };
+});
 const valeurs = computed(() => trie.value.map((s) => s.synthese.ratio));
 
 async function chargerServices() {
@@ -103,7 +110,14 @@ onMounted(async () => {
                             <option v-for="s in services" :key="s.id" :value="s.id" class="text-ink">{{ s.nom }}</option>
                         </select>
                     </div>
-                    <PeriodeFilters v-model:annee="annee" v-model:mois="mois" />
+                    <div class="flex flex-wrap items-center gap-2">
+                        <RouterLink
+                            v-if="serviceId !== null"
+                            :to="{ name: 'detail', query: { perimetre: 'service', id: serviceId, du: periodeDetail.du, au: periodeDetail.au } }"
+                            class="rounded-full border border-current/60 px-3 py-1.5 text-sm hover:bg-white/15"
+                        >{{ t('detail.voirDetail') }}</RouterLink>
+                        <PeriodeFilters v-model:annee="annee" v-model:mois="mois" />
+                    </div>
                 </div>
 
                 <p v-if="erreur" role="alert" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm">{{ erreur }}</p>

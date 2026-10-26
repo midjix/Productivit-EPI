@@ -73,7 +73,13 @@ onMounted(charger);
                     <h2 class="text-base font-medium uppercase tracking-wide text-role-ink-muted">
                         {{ estMoi ? t('dashboard.monEfficacite') : t('dashboard.efficaciteDe', { nom: donnees?.salarie?.name ?? '…' }) }}
                     </h2>
-                    <YearPicker v-model="annee" :disponibles="anneesDisponibles" :max="anneeCourante" />
+                    <div class="flex flex-wrap items-center gap-2">
+                        <RouterLink
+                            :to="{ name: 'detail', query: { perimetre: 'salarie', id: donnees?.salarie?.id ?? auth.utilisateur?.id, du: `${annee}-01-01`, au: `${annee}-12-31` } }"
+                            class="rounded-full border border-current/60 px-3 py-1.5 text-sm hover:bg-white/15"
+                        >{{ t('detail.voirDetail') }}</RouterLink>
+                        <YearPicker v-model="annee" :disponibles="anneesDisponibles" :max="anneeCourante" />
+                    </div>
                 </div>
 
                 <p v-if="erreur" role="alert" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm">{{ erreur }}</p>

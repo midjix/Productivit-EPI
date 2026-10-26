@@ -27,6 +27,12 @@ const synthese = computed(() => donnees.value?.synthese ?? null);
 const services = computed(() => donnees.value?.services ?? []);
 const nomService = (s) => s.service?.nom ?? t('globale.sansService');
 const labels = computed(() => services.value.map(nomService));
+const periodeDetail = computed(() => {
+    if (!mois.value) return { du: `${annee.value}-01-01`, au: `${annee.value}-12-31` };
+    const dernier = new Date(annee.value, mois.value, 0).getDate();
+    const m = String(mois.value).padStart(2, '0');
+    return { du: `${annee.value}-${m}-01`, au: `${annee.value}-${m}-${dernier}` };
+});
 const valeurs = computed(() => services.value.map((s) => s.synthese.ratio));
 
 async function charger() {
@@ -62,7 +68,13 @@ onMounted(charger);
             <div class="mx-auto max-w-6xl">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <h2 class="text-base font-medium uppercase tracking-wide text-role-ink-muted">{{ t('globale.totalEpi') }}</h2>
-                    <PeriodeFilters v-model:annee="annee" v-model:mois="mois" />
+                    <div class="flex flex-wrap items-center gap-2">
+                        <RouterLink
+                            :to="{ name: 'detail', query: { perimetre: 'epi', du: periodeDetail.du, au: periodeDetail.au } }"
+                            class="rounded-full border border-current/60 px-3 py-1.5 text-sm hover:bg-white/15"
+                        >{{ t('detail.voirDetail') }}</RouterLink>
+                        <PeriodeFilters v-model:annee="annee" v-model:mois="mois" />
+                    </div>
                 </div>
 
                 <p v-if="erreur" role="alert" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm">{{ erreur }}</p>

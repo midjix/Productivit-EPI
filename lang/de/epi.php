@@ -44,6 +44,13 @@ return [
 
     'planificateur' => 'Zeitplaner',
 
+    'detail' => [
+        'epi' => 'Gesamt EPI',
+        'interne' => 'Interne Tätigkeit',
+        'tarif' => 'Tarif :code',
+        'periode_trop_longue' => 'Der Zeitraum darf :max Tage nicht überschreiten.',
+    ],
+
     'champs' => [
         'email' => 'E-Mail-Adresse',
         'password' => 'Passwort',
@@ -68,5 +75,9 @@ return [
         'role' => 'Rolle',
         'q' => 'Suche',
         'non_qualifies' => 'nicht qualifiziert',
+        'perimetre' => 'Bereich',
+        'id' => 'Kennung',
+        'types_suivi' => 'Betreuungsarten',
+        'types_prestation' => 'Leistungsarten',
     ],
 ];

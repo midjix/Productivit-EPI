@@ -14,6 +14,7 @@ const { t } = useI18n();
 /** Entrées du menu, filtrées par rôle (héritage : un administrateur voit tout). */
 const entrees = computed(() => [
     { nom: 'tableau-de-bord', libelle: t('nav.tableauDeBord'), icone: 'home' },
+    { nom: 'detail', libelle: t('nav.detail'), icone: 'list' },
     { nom: 'service', libelle: t('nav.monService'), icone: 'users', role: 'coordinateur' },
     { nom: 'globales', libelle: t('nav.vueGlobale'), icone: 'globe', role: 'administrateur' },
     { nom: 'administration', libelle: t('nav.administration'), icone: 'cog', role: 'administrateur' },
@@ -22,6 +23,7 @@ const entrees = computed(() => [
 
 const ICONES = {
     home: 'M3 11.5 12 4l9 7.5M5 10v10h14V10',
+    list: 'M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01',
     users: 'M16 11a4 4 0 1 0-8 0 4 4 0 0 0 8 0Zm-12 9a8 8 0 0 1 16 0',
     globe: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm0-18c3 3 3 15 0 18m0-18c-3 3-3 15 0 18M3 12h18',
     cog: 'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7-3 1.5-1-1-2.5-1.8.3a7 7 0 0 0-1.5-1.5l.3-1.8L14 4l-1 1.5a7 7 0 0 0-2 0L10 4l-2.5 1 .3 1.8A7 7 0 0 0 6.3 8.3L4.5 8l-1 2.5L5 12l-1.5 1 1 2.5 1.8-.3a7 7 0 0 0 1.5 1.5l-.3 1.8L10 20l1-1.5a7 7 0 0 0 2 0l1 1.5 2.5-1-.3-1.8a7 7 0 0 0 1.5-1.5l1.8.3 1-2.5L19 12Z',

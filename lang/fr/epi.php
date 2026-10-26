@@ -52,6 +52,13 @@ return [
 
     'planificateur' => 'Planificateur',
 
+    'detail' => [
+        'epi' => 'Total EPI',
+        'interne' => 'Activité interne',
+        'tarif' => 'Tarif :code',
+        'periode_trop_longue' => 'La période ne peut pas dépasser :max jours.',
+    ],
+
     // Libellés des champs dans les messages de validation.
     'champs' => [
         'email' => 'adresse email',
@@ -77,5 +84,9 @@ return [
         'role' => 'rôle',
         'q' => 'recherche',
         'non_qualifies' => 'non qualifiés',
+        'perimetre' => 'périmètre',
+        'id' => 'identifiant',
+        'types_suivi' => 'types de suivi',
+        'types_prestation' => 'types de prestation',
     ],
 ];

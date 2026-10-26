@@ -36,6 +36,7 @@ const routes = [
                     { path: 'organigramme', name: 'admin-organigramme', component: () => import('@/pages/admin/OrganigrammePage.vue'), meta: { titre: 'administration', role: 'administrateur' } },
                 ],
             },
+            { path: 'detail', name: 'detail', component: () => import('@/pages/DetailPage.vue'), meta: { titre: 'detail' } },
             { path: 'mot-de-passe', name: 'mot-de-passe', component: () => import('@/pages/ChangerMotDePassePage.vue'), meta: { titre: 'motDePasse' } },
         ],
     },

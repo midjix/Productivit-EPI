@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Admin\TarifController;
 use App\Http\Controllers\Api\Admin\TypeSuiviController;
 use App\Http\Controllers\Api\Admin\UtilisateurController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\DetailController;
 use App\Http\Controllers\Api\SalarieController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\StatistiqueController;
@@ -36,6 +37,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
     Route::put('/me/mot-de-passe', [AuthController::class, 'changerMotDePasse'])->name('api.me.mot-de-passe');
+
+    // Détail (calcul depuis les flux bruts, période libre, filtres) — tout rôle, périmètre contrôlé.
+    Route::get('/statistiques/detail', [DetailController::class, 'show'])->name('api.statistiques.detail');
+    Route::get('/statistiques/filtres', [DetailController::class, 'filtres'])->name('api.statistiques.filtres');
 
     // Consultation (lecture du cache) — tout rôle, périmètre contrôlé par UserPolicy.
     Route::get('/statistiques/me', [StatistiqueController::class, 'moi'])->name('api.statistiques.moi');

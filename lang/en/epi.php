@@ -44,6 +44,13 @@ return [
 
     'planificateur' => 'Scheduler',
 
+    'detail' => [
+        'epi' => 'EPI total',
+        'interne' => 'Internal activity',
+        'tarif' => 'Tariff :code',
+        'periode_trop_longue' => 'The period cannot exceed :max days.',
+    ],
+
     'champs' => [
         'email' => 'email address',
         'password' => 'password',
@@ -68,5 +75,9 @@ return [
         'role' => 'role',
         'q' => 'search',
         'non_qualifies' => 'unqualified',
+        'perimetre' => 'scope',
+        'id' => 'identifier',
+        'types_suivi' => 'follow-up types',
+        'types_prestation' => 'service types',
     ],
 ];

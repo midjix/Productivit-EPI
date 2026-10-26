@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use App\Enums\CategorieHeure;
+use App\Etl\Bareme;
 use App\Etl\CalculEfficacite;
 use App\Models\DonneeDsk;
 use App\Models\DonneeEpilogg;
-use App\Models\RegleConversion;
 use App\Models\StatistiqueMensuelle;
 use App\Models\User;
 use Carbon\CarbonImmutable;
@@ -22,8 +22,8 @@ use Illuminate\Support\Collection;
  */
 class ConsolidationService
 {
-    /** @var Collection<int, Collection<int, RegleConversion>>|null règles par tarif, chargées une fois par exécution */
-    private ?Collection $reglesParTarif = null;
+    /** Barème historisé, chargé une fois par exécution. */
+    private ?Bareme $bareme = null;
 
     /**
      * Recalcule un ensemble de (salarié, année, mois).
@@ -33,7 +33,7 @@ class ConsolidationService
      */
     public function recalculer(iterable $periodes): int
     {
-        $this->reglesParTarif = null;
+        $this->bareme = null;
         $n = 0;
 
         foreach ($periodes as $p) {
@@ -120,15 +120,16 @@ class ConsolidationService
         $facturables = '0.00';
         $internes = '0.00';
 
-        foreach ($lignes as $l) {
-            $regle = $this->regleEnVigueur((int) $l->tarif_id, $l->date);
+        $this->bareme ??= new Bareme;
 
-            if ($regle === null) {
+        foreach ($lignes as $l) {
+            $quantite = (string) $l->quantite;
+            $minutes = $this->bareme->valoriser((int) $l->tarif_id, $l->date, $quantite);
+
+            if ($minutes === null) {
                 continue; // pas de barème à cette date : la prestation n'est pas valorisée (jamais inventée)
             }
 
-            $quantite = (string) $l->quantite;
-            $minutes = bcmul($quantite, (string) $regle->minutes, 2);
             $nb = bcadd($nb, $quantite, 2);
 
             if ($l->facturable) {
@@ -139,16 +140,6 @@ class ConsolidationService
         }
 
         return ['nbPrestations' => $nb, 'minutesFacturables' => $facturables, 'minutesActiviteInterne' => $internes];
-    }
-
-    private function regleEnVigueur(int $tarifId, string $date): ?RegleConversion
-    {
-        $this->reglesParTarif ??= RegleConversion::query()
-            ->orderBy('date_debut_validite')
-            ->get()
-            ->groupBy('tarif_id');
-
-        return $this->reglesParTarif->get($tarifId, collect())->first(fn (RegleConversion $r) => $r->couvre($date));
     }
 
     // ---- Périodes -------------------------------------------------------------
