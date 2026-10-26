@@ -13,7 +13,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-    <div class="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
+    <div class="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
         <div class="flex items-center gap-6 rounded-lg bg-white/10 p-5">
             <RatioRing :ratio="synthese?.ratio ?? null" :objectif="synthese?.objectif ?? '0.7500'" />
             <div>

@@ -7,6 +7,8 @@ import { heuresDecimales, pourcentage } from '@/utils/format';
 import PeriodeFilters from '@/components/PeriodeFilters.vue';
 import SyntheseHero from '@/components/SyntheseHero.vue';
 import UiCard from '@/components/UiCard.vue';
+import UiLoading from '@/components/UiLoading.vue';
+import UiSpinner from '@/components/UiSpinner.vue';
 import RatioBarChart from '@/components/RatioBarChart.vue';
 import ObjectifBadge from '@/components/ObjectifBadge.vue';
 
@@ -64,6 +66,7 @@ onMounted(charger);
                 </div>
 
                 <p v-if="erreur" role="alert" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm">{{ erreur }}</p>
+                <p v-else-if="chargement && !donnees" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm"><UiSpinner couleur="text-current" :libelle="t('dashboard.lecture')" /></p>
                 <div v-else class="mt-4">
                     <SyntheseHero :synthese="synthese" :libelle="mois ? t('service.periodeMois') : t('dashboard.efficacite', { annee })" />
                 </div>
@@ -71,9 +74,7 @@ onMounted(charger);
         </section>
 
         <section class="mx-auto max-w-6xl space-y-4 px-4 py-6 sm:px-6">
-            <UiCard v-if="chargement && !donnees" :titre="t('dashboard.chargement')">
-                <p class="text-ink-muted">{{ t('dashboard.lecture') }}</p>
-            </UiCard>
+            <UiLoading v-if="chargement && !donnees" />
 
             <UiCard v-else-if="!erreur && donnees && services.length === 0" :titre="t('dashboard.aucune', { annee })">
                 <p class="text-ink-secondary">{{ t('dashboard.aucuneTexte') }}</p>

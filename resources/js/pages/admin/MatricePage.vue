@@ -5,6 +5,7 @@ import client, { messageErreur } from '@/api/client';
 import { useNotificationsStore } from '@/stores/notifications';
 import { date } from '@/utils/format';
 import UiCard from '@/components/UiCard.vue';
+import UiLoading from '@/components/UiLoading.vue';
 import UiModal from '@/components/UiModal.vue';
 
 /**
@@ -15,6 +16,7 @@ const { t } = useI18n();
 const notifications = useNotificationsStore();
 
 const tarifs = ref([]);
+const chargement = ref(true);
 const tarifEdite = ref(null);
 const form = reactive({ minutes: '', date_debut: '', commentaire: '' });
 const erreurs = ref({});
@@ -26,6 +28,8 @@ async function charger() {
         tarifs.value = data;
     } catch (e) {
         notifications.erreur(messageErreur(e, t('erreurs.generique'), t('erreurs.reseau')));
+    } finally {
+        chargement.value = false;
     }
 }
 
@@ -63,6 +67,8 @@ onMounted(charger);
         <UiCard :titre="t('admin.matrice.titre')" :sous-titre="t('admin.matrice.sousTitre')">
             <p class="text-sm text-ink-secondary">{{ t('admin.matrice.explication') }}</p>
         </UiCard>
+
+        <UiLoading v-if="chargement" />
 
         <UiCard v-for="ta in tarifs" :key="ta.id" :titre="`${ta.code} — ${ta.libelle}`" :sous-titre="ta.facturable ? t('admin.matrice.facturable') : t('admin.matrice.nonFacturable')">
             <div class="mb-3 flex flex-wrap items-center justify-between gap-3">

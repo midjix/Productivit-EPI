@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n';
 import { useAuthStore } from '@/stores/auth';
 import { useRechercheStore } from '@/stores/recherche';
 import { classer } from '@/utils/recherche';
+import UiSpinner from '@/components/UiSpinner.vue';
 
 /**
  * Recherche d'un salarié (coordinateur : son service ; administrateur : tous) ou d'un
@@ -109,7 +110,7 @@ const placeholder = computed(() => (auth.estAdministrateurRole ? t('recherche.pl
             role="listbox"
             class="absolute left-0 right-0 top-full z-50 mt-1 max-h-96 overflow-y-auto rounded-md border border-border bg-surface-raised p-1 text-sm shadow-xl"
         >
-            <p v-if="vide && recherche.chargement" class="px-3 py-2 text-ink-muted">{{ t('recherche.chargement') }}</p>
+            <p v-if="vide && recherche.chargement" class="px-3 py-2 text-ink-muted"><UiSpinner taille="h-4 w-4" :libelle="t('recherche.chargement')" /></p>
             <p v-else-if="vide" class="px-3 py-2 text-ink-muted">{{ texte ? t('recherche.aucun') : t('recherche.aide') }}</p>
             <template v-for="g in groupes" :key="g.cle">
                 <p class="px-3 pb-1 pt-2 text-[11px] font-medium uppercase tracking-wide text-ink-muted">{{ t(`recherche.${g.cle}`) }}</p>

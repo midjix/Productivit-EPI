@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth';
 import { useNotificationsStore } from '@/stores/notifications';
 import UiCard from '@/components/UiCard.vue';
 import UiModal from '@/components/UiModal.vue';
+import UiSpinner from '@/components/UiSpinner.vue';
 
 /**
  * Cas d'utilisation « Gérer l'organigramme et les affectations » : services (libellé, activité),
@@ -23,6 +24,8 @@ const meta = ref(null);
 const page = ref(1);
 const filtres = reactive({ q: '', service_id: '', role: '', actif: '' });
 const enregistrement = ref(null);
+const chargementServices = ref(true);
+const chargementUtilisateurs = ref(true);
 
 const utilisateurEdite = ref(null);
 const formUtilisateur = reactive({ role: '', service_id: '', actif: true, email: '' });
@@ -37,10 +40,13 @@ async function chargerServices() {
         services.value = data.map((s) => ({ ...s, brouillon: { nom: s.nom, actif: s.actif } }));
     } catch (e) {
         notifications.erreur(messageErreur(e, t('erreurs.generique'), t('erreurs.reseau')));
+    } finally {
+        chargementServices.value = false;
     }
 }
 
 async function chargerUtilisateurs() {
+    chargementUtilisateurs.value = true;
     try {
         const params = { page: page.value };
         for (const [k, v] of Object.entries(filtres)) if (v !== '') params[k] = v;
@@ -49,6 +55,8 @@ async function chargerUtilisateurs() {
         meta.value = data.meta;
     } catch (e) {
         notifications.erreur(messageErreur(e, t('erreurs.generique'), t('erreurs.reseau')));
+    } finally {
+        chargementUtilisateurs.value = false;
     }
 }
 
@@ -140,6 +148,7 @@ onMounted(() => {
                         </tr>
                     </thead>
                     <tbody>
+                        <tr v-if="chargementServices"><td colspan="5" class="py-4 text-center text-ink-muted"><UiSpinner :libelle="t('dashboard.chargement')" /></td></tr>
                         <tr v-for="s in services" :key="s.id" class="border-b border-border/60 hover:bg-surface-muted">
                             <td class="py-2 pr-3 font-mono text-xs text-ink-muted">{{ s.code }}</td>
                             <td class="py-2 pr-3"><input v-model="s.brouillon.nom" type="text" class="w-full rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.organigramme.nom')" /></td>
@@ -205,7 +214,8 @@ onMounted(() => {
                                 <button type="button" class="ml-3 text-xs text-accent-strong hover:underline" @click="ouvrirMotDePasse(u)">{{ t('admin.organigramme.motDePasse') }}</button>
                             </td>
                         </tr>
-                        <tr v-if="utilisateurs.length === 0"><td colspan="7" class="py-4 text-center text-ink-muted">{{ t('admin.aucunResultat') }}</td></tr>
+                        <tr v-if="chargementUtilisateurs && utilisateurs.length === 0"><td colspan="7" class="py-4 text-center text-ink-muted"><UiSpinner :libelle="t('dashboard.chargement')" /></td></tr>
+                        <tr v-else-if="utilisateurs.length === 0"><td colspan="7" class="py-4 text-center text-ink-muted">{{ t('admin.aucunResultat') }}</td></tr>
                     </tbody>
                 </table>
             </div>

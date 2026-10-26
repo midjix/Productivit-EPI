@@ -9,10 +9,11 @@ const { t } = useI18n();
 </script>
 
 <template>
+    <!-- Les en-têtes passent à la ligne pour que les onze colonnes tiennent dans la carte ; le défilement n'est qu'un dernier recours. -->
     <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+        <table class="w-full text-xs xl:text-sm [&_td]:pr-2 [&_th]:pr-2 xl:[&_td]:pr-3 xl:[&_th]:pr-3">
             <thead>
-                <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted">
+                <tr class="border-b border-border align-bottom text-left text-[10px] uppercase leading-tight tracking-wide text-ink-muted xl:text-[11px] [&>th]:whitespace-normal">
                     <th class="py-2 pr-3 font-medium">{{ t('table.mois') }}</th>
                     <th class="py-2 pr-3 text-right font-medium">{{ t('table.total') }}</th>
                     <th class="py-2 pr-3 text-right font-medium">{{ t('table.congesMaladie') }}</th>

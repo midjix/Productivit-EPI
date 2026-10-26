@@ -5,6 +5,7 @@ import client, { messageErreur } from '@/api/client';
 import { useNotificationsStore } from '@/stores/notifications';
 import { date, dateHeure } from '@/utils/format';
 import UiCard from '@/components/UiCard.vue';
+import UiSpinner from '@/components/UiSpinner.vue';
 
 /**
  * Cas d'utilisation « Superviser les imports », « Importer les données » (manuel)
@@ -106,43 +107,50 @@ const classeStatut = {
 
 <template>
     <div class="space-y-4">
-        <div class="grid gap-4 lg:grid-cols-2">
+        <div class="grid gap-4 xl:grid-cols-2">
             <UiCard :titre="t('admin.imports.lancer')" :sous-titre="t('admin.imports.lancerSousTitre')">
-                <form class="grid gap-3 sm:grid-cols-[minmax(9rem,1fr)_1fr_1fr_auto] sm:items-end" @submit.prevent="lancerImport">
-                    <div>
+                <!-- Champs en flux : ils passent à la ligne plutôt que de déborder de la carte -->
+                <form class="flex flex-wrap items-end gap-3" @submit.prevent="lancerImport">
+                    <div class="min-w-[10rem] flex-1">
                         <label for="source" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.imports.source') }}</label>
                         <select id="source" v-model="formImport.source" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink">
                             <option v-for="s in ['all', 'dsk', 'epilogg']" :key="s" :value="s">{{ t(`admin.imports.sources.${s}`) }}</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="min-w-[10rem] flex-1">
                         <label for="import-du" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.du') }}</label>
                         <input id="import-du" v-model="formImport.du" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
                         <p v-if="erreursImport.du" class="mt-1 text-xs text-bad">{{ erreursImport.du[0] }}</p>
                     </div>
-                    <div>
+                    <div class="min-w-[10rem] flex-1">
                         <label for="import-au" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.au') }}</label>
                         <input id="import-au" v-model="formImport.au" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
                         <p v-if="erreursImport.au" class="mt-1 text-xs text-bad">{{ erreursImport.au[0] }}</p>
                     </div>
-                    <button type="submit" :disabled="envoi" class="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">{{ t('admin.imports.boutonImport') }}</button>
+                    <button type="submit" :disabled="envoi" class="inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
+                        <UiSpinner v-if="envoi" taille="h-4 w-4" class="text-white" />
+                        {{ t('admin.imports.boutonImport') }}
+                    </button>
                 </form>
                 <p class="mt-2 text-xs text-ink-muted">{{ t('admin.imports.aide') }}</p>
             </UiCard>
 
             <UiCard :titre="t('admin.imports.recalculer')" :sous-titre="t('admin.imports.recalculerSousTitre')">
-                <form class="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end" @submit.prevent="lancerRecalcul">
-                    <div>
+                <form class="flex flex-wrap items-end gap-3" @submit.prevent="lancerRecalcul">
+                    <div class="min-w-[10rem] flex-1">
                         <label for="recalc-du" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.du') }}</label>
                         <input id="recalc-du" v-model="formRecalcul.du" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
                         <p v-if="erreursRecalcul.du" class="mt-1 text-xs text-bad">{{ erreursRecalcul.du[0] }}</p>
                     </div>
-                    <div>
+                    <div class="min-w-[10rem] flex-1">
                         <label for="recalc-au" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.au') }}</label>
                         <input id="recalc-au" v-model="formRecalcul.au" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
                         <p v-if="erreursRecalcul.au" class="mt-1 text-xs text-bad">{{ erreursRecalcul.au[0] }}</p>
                     </div>
-                    <button type="submit" :disabled="envoi" class="rounded-full border border-accent px-5 py-2 text-sm font-semibold text-accent-strong hover:bg-accent/10 disabled:opacity-60">{{ t('admin.imports.boutonRecalcul') }}</button>
+                    <button type="submit" :disabled="envoi" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-accent px-5 py-2 text-sm font-semibold text-accent-strong hover:bg-accent/10 disabled:opacity-60">
+                        <UiSpinner v-if="envoi" taille="h-4 w-4" />
+                        {{ t('admin.imports.boutonRecalcul') }}
+                    </button>
                 </form>
                 <p class="mt-2 text-xs text-ink-muted">{{ t('admin.imports.aideRecalcul') }}</p>
             </UiCard>
@@ -183,7 +191,7 @@ const classeStatut = {
                                 <td class="py-2 pr-3 whitespace-nowrap tabular-nums">{{ dateHeure(i.demarre_le) }}</td>
                                 <td class="py-2 pr-3 uppercase">{{ i.source }}</td>
                                 <td class="py-2 pr-3"><span class="rounded-full px-2 py-0.5 text-xs font-medium" :class="classeStatut[i.statut]">{{ t(`admin.imports.statuts.${i.statut}`) }}</span></td>
-                                <td class="py-2 pr-3 whitespace-nowrap">{{ date(i.periode_debut) }} → {{ date(i.periode_fin) }}</td>
+                                <td class="py-2 pr-3">{{ date(i.periode_debut) }} → {{ date(i.periode_fin) }}</td>
                                 <td class="py-2 pr-3 text-right tabular-nums">{{ i.nb_lignes }}</td>
                                 <td class="py-2 pr-3 text-right tabular-nums">{{ i.duree_secondes === null ? '—' : `${i.duree_secondes} s` }}</td>
                                 <td class="py-2 pr-3">{{ i.declencheur }}</td>
@@ -205,7 +213,10 @@ const classeStatut = {
                                 </td>
                             </tr>
                         </template>
-                        <tr v-if="!chargement && imports.length === 0">
+                        <tr v-if="chargement && imports.length === 0">
+                            <td colspan="8" class="py-4 text-center text-ink-muted"><UiSpinner :libelle="t('dashboard.chargement')" /></td>
+                        </tr>
+                        <tr v-else-if="imports.length === 0">
                             <td colspan="8" class="py-4 text-center text-ink-muted">{{ t('admin.aucunResultat') }}</td>
                         </tr>
                     </tbody>

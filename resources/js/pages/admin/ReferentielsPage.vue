@@ -5,6 +5,8 @@ import client, { messageErreur } from '@/api/client';
 import { useNotificationsStore } from '@/stores/notifications';
 import { date } from '@/utils/format';
 import UiCard from '@/components/UiCard.vue';
+import UiLoading from '@/components/UiLoading.vue';
+import UiSpinner from '@/components/UiSpinner.vue';
 
 /**
  * Cas d'utilisation « Qualifier les référentiels importés » : compteurs DSK (catégorie,
@@ -22,6 +24,7 @@ const tarifs = ref([]);
 const services = ref([]);
 const seulementNonQualifies = ref(false);
 const enregistrement = ref(null);
+const chargement = ref(true);
 
 const typesAffiches = computed(() => (seulementNonQualifies.value ? types.value.filter((x) => !x.qualifie) : types.value));
 const nbNonQualifies = computed(() => types.value.filter((x) => !x.qualifie).length);
@@ -40,6 +43,8 @@ async function charger() {
         services.value = se.data;
     } catch (e) {
         notifications.erreur(messageErreur(e, t('erreurs.generique'), t('erreurs.reseau')));
+    } finally {
+        chargement.value = false;
     }
 }
 
@@ -86,7 +91,8 @@ onMounted(charger);
 
 <template>
     <div class="space-y-4">
-        <UiCard :titre="t('admin.referentiels.comptes')" :sous-titre="t('admin.referentiels.comptesSousTitre')">
+        <UiLoading v-if="chargement" />
+        <UiCard v-if="!chargement" :titre="t('admin.referentiels.comptes')" :sous-titre="t('admin.referentiels.comptesSousTitre')">
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
@@ -105,7 +111,7 @@ onMounted(charger);
                             <td class="py-2 pr-3 tabular-nums text-ink-muted">{{ c.no_account }}</td>
                             <td class="py-2 pr-3 font-medium text-ink">{{ c.libelle }}</td>
                             <td class="py-2 pr-3">
-                                <select v-model="c.brouillon.categorie" class="rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.referentiels.categorie')">
+                                <select v-model="c.brouillon.categorie" class="w-full max-w-[14rem] rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.referentiels.categorie')">
                                     <option v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ t(`admin.categories.${cat}`) }}</option>
                                 </select>
                             </td>
@@ -113,7 +119,9 @@ onMounted(charger);
                             <td class="py-2 pr-3 text-center"><input v-model="c.brouillon.actif" type="checkbox" class="h-4 w-4 accent-accent" :aria-label="t('admin.actif')" /></td>
                             <td class="py-2 pr-3 text-right tabular-nums text-ink-secondary">{{ c.nb_lignes ?? 0 }}</td>
                             <td class="py-2 text-right">
-                                <button type="button" class="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white hover:bg-accent-strong disabled:opacity-60" :disabled="enregistrement === `c${c.id}`" @click="enregistrerCompte(c)">{{ t('admin.enregistrer') }}</button>
+                                <button type="button" class="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white hover:bg-accent-strong disabled:opacity-60" :disabled="enregistrement === `c${c.id}`" @click="enregistrerCompte(c)">
+                                    <UiSpinner v-if="enregistrement === `c${c.id}`" taille="h-3 w-3" class="text-white" />{{ t('admin.enregistrer') }}
+                                </button>
                             </td>
                         </tr>
                         <tr v-if="comptes.length === 0"><td colspan="7" class="py-4 text-center text-ink-muted">{{ t('admin.aucunResultat') }}</td></tr>
@@ -122,7 +130,7 @@ onMounted(charger);
             </div>
         </UiCard>
 
-        <UiCard :titre="t('admin.referentiels.types')" :sous-titre="t('admin.referentiels.typesSousTitre')">
+        <UiCard v-if="!chargement" :titre="t('admin.referentiels.types')" :sous-titre="t('admin.referentiels.typesSousTitre')">
             <label class="mb-3 inline-flex items-center gap-2 text-sm">
                 <input v-model="seulementNonQualifies" type="checkbox" class="h-4 w-4 accent-accent" />
                 {{ t('admin.referentiels.seulementNonQualifies', { n: nbNonQualifies }) }}
@@ -146,13 +154,14 @@ onMounted(charger);
                                 <span v-if="!x.qualifie" class="ml-2 rounded-full bg-bad/15 px-2 py-0.5 text-xs font-medium text-bad">{{ t('admin.referentiels.nonQualifie') }}</span>
                             </td>
                             <td class="py-2 pr-3">
-                                <select v-model="x.brouillon.tarif_id" class="rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.referentiels.tarif')">
+                                <!-- Largeur bornée : le libellé complet reste lisible dans la liste déroulante -->
+                                <select v-model="x.brouillon.tarif_id" class="w-full max-w-[18rem] rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.referentiels.tarif')" :title="tarifs.find((ta) => ta.id === Number(x.brouillon.tarif_id))?.libelle">
                                     <option value="">—</option>
                                     <option v-for="ta in tarifs" :key="ta.id" :value="ta.id">{{ ta.code }} — {{ ta.libelle }}</option>
                                 </select>
                             </td>
                             <td class="py-2 pr-3">
-                                <select v-model="x.brouillon.service_id" class="rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.referentiels.service')">
+                                <select v-model="x.brouillon.service_id" class="w-full max-w-[12rem] rounded-md border border-border bg-surface px-2 py-1 text-ink" :aria-label="t('admin.referentiels.service')">
                                     <option value="">{{ t('admin.referentiels.aucunService') }}</option>
                                     <option v-for="s in services" :key="s.id" :value="s.id">{{ s.nom }}</option>
                                 </select>
@@ -160,7 +169,9 @@ onMounted(charger);
                             <td class="py-2 pr-3 text-center"><input v-model="x.brouillon.actif" type="checkbox" class="h-4 w-4 accent-accent" :aria-label="t('admin.actif')" /></td>
                             <td class="py-2 pr-3 text-right tabular-nums text-ink-secondary">{{ x.nb_prestations ?? 0 }}</td>
                             <td class="py-2 text-right">
-                                <button type="button" class="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white hover:bg-accent-strong disabled:opacity-60" :disabled="enregistrement === `t${x.id}`" @click="enregistrerType(x)">{{ t('admin.enregistrer') }}</button>
+                                <button type="button" class="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white hover:bg-accent-strong disabled:opacity-60" :disabled="enregistrement === `t${x.id}`" @click="enregistrerType(x)">
+                                    <UiSpinner v-if="enregistrement === `t${x.id}`" taille="h-3 w-3" class="text-white" />{{ t('admin.enregistrer') }}
+                                </button>
                             </td>
                         </tr>
                         <tr v-if="typesAffiches.length === 0"><td colspan="6" class="py-4 text-center text-ink-muted">{{ t('admin.aucunResultat') }}</td></tr>

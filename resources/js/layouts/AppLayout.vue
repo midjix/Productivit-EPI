@@ -8,6 +8,7 @@ import { titreDocument } from '@/router';
 import AppHeader from '@/components/AppHeader.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
 import ToastList from '@/components/ToastList.vue';
+import ProgressBar from '@/components/ProgressBar.vue';
 
 /**
  * Gabarit des écrans connectés, organisé comme DSKnet : bandeau en haut (logo, titre
@@ -36,6 +37,7 @@ watch(locale, () => {
 <template>
     <div :data-role="auth.role" class="flex min-h-screen flex-col bg-surface-muted">
         <AppHeader :titre="route.meta.titre ? t(`titres.${route.meta.titre}`) : ''" @basculer-menu="menuOuvert = !menuOuvert" />
+        <ProgressBar />
 
         <div class="flex flex-1">
             <AppSidebar :ouvert="menuOuvert" @fermer="menuOuvert = false" />

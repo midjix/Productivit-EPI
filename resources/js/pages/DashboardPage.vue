@@ -9,6 +9,8 @@ import YearPicker from '@/components/YearPicker.vue';
 import RatioRing from '@/components/RatioRing.vue';
 import StatTile from '@/components/StatTile.vue';
 import UiCard from '@/components/UiCard.vue';
+import UiLoading from '@/components/UiLoading.vue';
+import UiSpinner from '@/components/UiSpinner.vue';
 import MonthlyChart from '@/components/MonthlyChart.vue';
 import MonthsTable from '@/components/MonthsTable.vue';
 
@@ -75,8 +77,9 @@ onMounted(charger);
                 </div>
 
                 <p v-if="erreur" role="alert" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm">{{ erreur }}</p>
+                <p v-else-if="chargement && !donnees" class="mt-4 rounded-md bg-white/15 px-4 py-3 text-sm"><UiSpinner couleur="text-current" :libelle="t('dashboard.lecture')" /></p>
 
-                <div v-else class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
+                <div v-else class="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
                     <div class="flex items-center gap-6 rounded-lg bg-white/10 p-5">
                         <RatioRing :ratio="synthese?.ratio ?? null" :objectif="synthese?.objectif ?? '0.7500'" />
                         <div>
@@ -103,9 +106,7 @@ onMounted(charger);
         </section>
 
         <section class="mx-auto max-w-6xl space-y-4 px-4 py-6 sm:px-6">
-            <UiCard v-if="chargement && !donnees" :titre="t('dashboard.chargement')">
-                <p class="text-ink-muted">{{ t('dashboard.lecture') }}</p>
-            </UiCard>
+            <UiLoading v-if="chargement && !donnees" />
 
             <UiCard v-else-if="!erreur && !aDesDonnees" :titre="t('dashboard.aucune', { annee })">
                 <p class="text-ink-secondary">{{ t('dashboard.aucuneTexte') }}</p>
