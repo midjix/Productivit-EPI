@@ -1,12 +1,16 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import client, { messageErreur } from '@/api/client';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationsStore } from '@/stores/notifications';
+import { verifier } from '@/utils/motDePasse';
+import UiBusy from '@/components/UiBusy.vue';
 import UiCard from '@/components/UiCard.vue';
 import UiModal from '@/components/UiModal.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
+import PasswordField from '@/components/PasswordField.vue';
+import PasswordRules from '@/components/PasswordRules.vue';
 
 /**
  * Cas d'utilisation « Gérer l'organigramme et les affectations » : services (libellé, activité),
@@ -33,6 +37,7 @@ const motDePassePour = ref(null);
 const formMdp = reactive({ password: '', password_confirmation: '' });
 const erreurs = ref({});
 const envoi = ref(false);
+const reglesMdp = computed(() => verifier(formMdp.password, { confirmation: formMdp.password_confirmation }));
 
 async function chargerServices() {
     try {
@@ -155,7 +160,9 @@ onMounted(() => {
                             <td class="py-2 pr-3 text-center"><input v-model="s.brouillon.actif" type="checkbox" class="h-4 w-4 accent-accent" :aria-label="t('admin.actif')" /></td>
                             <td class="py-2 pr-3 text-right tabular-nums text-ink-secondary">{{ s.nb_utilisateurs }}</td>
                             <td class="py-2 text-right">
-                                <button type="button" class="rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white hover:bg-accent-strong disabled:opacity-60" :disabled="enregistrement === s.id" @click="enregistrerService(s)">{{ t('admin.enregistrer') }}</button>
+                                <button type="button" class="inline-flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white hover:bg-accent-strong disabled:opacity-60" :disabled="enregistrement === s.id" @click="enregistrerService(s)">
+                                    <UiSpinner v-if="enregistrement === s.id" taille="h-3 w-3" couleur="text-white" />{{ t('admin.enregistrer') }}
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -179,10 +186,12 @@ onMounted(() => {
                     <option value="1">{{ t('admin.organigramme.actifs') }}</option>
                     <option value="0">{{ t('admin.organigramme.inactifs') }}</option>
                 </select>
-                <button type="submit" class="rounded-md border border-border px-3 py-1.5 hover:bg-surface-muted">{{ t('admin.organigramme.filtrer') }}</button>
+                <button type="submit" class="inline-flex items-center gap-2 rounded-md border border-border px-3 py-1.5 hover:bg-surface-muted" :disabled="chargementUtilisateurs">
+                    <UiSpinner v-if="chargementUtilisateurs" taille="h-3.5 w-3.5" />{{ t('admin.organigramme.filtrer') }}
+                </button>
             </form>
 
-            <div class="overflow-x-auto">
+            <UiBusy :actif="chargementUtilisateurs && utilisateurs.length > 0" class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted">
@@ -218,7 +227,7 @@ onMounted(() => {
                         <tr v-else-if="utilisateurs.length === 0"><td colspan="7" class="py-4 text-center text-ink-muted">{{ t('admin.aucunResultat') }}</td></tr>
                     </tbody>
                 </table>
-            </div>
+            </UiBusy>
 
             <div v-if="meta && meta.last_page > 1" class="mt-3 flex items-center justify-between text-sm">
                 <button type="button" class="rounded-md border border-border px-3 py-1.5 disabled:opacity-40" :disabled="page <= 1" @click="page--; chargerUtilisateurs()">‹</button>
@@ -256,26 +265,24 @@ onMounted(() => {
                 <p v-if="erreurs.actif" class="text-sm text-bad">{{ erreurs.actif[0] }}</p>
                 <div class="flex justify-end gap-2">
                     <button type="button" class="rounded-full border border-border px-4 py-2 text-sm" @click="utilisateurEdite = null">{{ t('admin.annuler') }}</button>
-                    <button type="submit" :disabled="envoi" class="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">{{ t('admin.enregistrer') }}</button>
+                    <button type="submit" :disabled="envoi" class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
+                        <UiSpinner v-if="envoi" taille="h-4 w-4" couleur="text-white" />{{ t('admin.enregistrer') }}
+                    </button>
                 </div>
             </form>
         </UiModal>
 
         <UiModal v-if="motDePassePour" :titre="t('admin.organigramme.mdpPour', { nom: motDePassePour.name })" @fermer="motDePassePour = null">
             <form class="space-y-4" novalidate @submit.prevent="enregistrerMotDePasse">
-                <div>
-                    <label for="m-password" class="mb-1 block text-sm text-ink-secondary">{{ t('mdp.nouveau') }}</label>
-                    <input id="m-password" v-model="formMdp.password" type="password" autocomplete="new-password" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
-                    <p v-if="erreurs.password" class="mt-1 text-sm text-bad">{{ erreurs.password[0] }}</p>
-                </div>
-                <div>
-                    <label for="m-confirm" class="mb-1 block text-sm text-ink-secondary">{{ t('mdp.confirmer') }}</label>
-                    <input id="m-confirm" v-model="formMdp.password_confirmation" type="password" autocomplete="new-password" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
-                </div>
+                <PasswordField id="m-password" v-model="formMdp.password" :label="t('mdp.nouveau')" :erreurs="erreurs.password ?? []" />
+                <PasswordRules :regles="reglesMdp" />
+                <PasswordField id="m-confirm" v-model="formMdp.password_confirmation" :label="t('mdp.confirmer')" :erreurs="erreurs.password_confirmation ?? []" />
                 <p class="text-xs text-ink-muted">{{ t('admin.organigramme.mdpAide') }}</p>
                 <div class="flex justify-end gap-2">
                     <button type="button" class="rounded-full border border-border px-4 py-2 text-sm" @click="motDePassePour = null">{{ t('admin.annuler') }}</button>
-                    <button type="submit" :disabled="envoi" class="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">{{ t('admin.enregistrer') }}</button>
+                    <button type="submit" :disabled="envoi" class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
+                        <UiSpinner v-if="envoi" taille="h-4 w-4" couleur="text-white" />{{ t('admin.enregistrer') }}
+                    </button>
                 </div>
             </form>
         </UiModal>

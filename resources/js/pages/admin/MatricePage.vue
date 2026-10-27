@@ -7,6 +7,7 @@ import { date } from '@/utils/format';
 import UiCard from '@/components/UiCard.vue';
 import UiLoading from '@/components/UiLoading.vue';
 import UiModal from '@/components/UiModal.vue';
+import UiSpinner from '@/components/UiSpinner.vue';
 
 /**
  * Cas d'utilisation « Gérer la matrice de conversion » : historique des barèmes par tarif
@@ -50,6 +51,7 @@ async function enregistrer() {
         });
         notifications.succes(t('admin.matrice.enregistre', { code: tarifEdite.value.code, minutes: form.minutes, date: date(form.date_debut) }));
         tarifEdite.value = null;
+        chargement.value = true; // la carte d'attente réapparaît le temps de relire l'historique recalculé
         await charger();
     } catch (e) {
         erreurs.value = e.response?.data?.errors ?? {};
@@ -122,7 +124,9 @@ onMounted(charger);
                 <p class="text-xs text-ink-muted">{{ t('admin.matrice.avertissement') }}</p>
                 <div class="flex justify-end gap-2">
                     <button type="button" class="rounded-full border border-border px-4 py-2 text-sm" @click="tarifEdite = null">{{ t('admin.annuler') }}</button>
-                    <button type="submit" :disabled="envoi" class="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">{{ t('admin.enregistrer') }}</button>
+                    <button type="submit" :disabled="envoi" class="inline-flex items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
+                        <UiSpinner v-if="envoi" taille="h-4 w-4" couleur="text-white" />{{ t('admin.enregistrer') }}
+                    </button>
                 </div>
             </form>
         </UiModal>

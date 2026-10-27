@@ -124,11 +124,25 @@
     "mdp": {
         "titre": "Changer mon mot de passe",
         "actuel": "Mot de passe actuel",
-        "nouveau": "Nouveau mot de passe (12 caractères minimum, lettres et chiffres)",
+        "nouveau": "Nouveau mot de passe",
         "confirmer": "Confirmer le nouveau mot de passe",
         "enregistrer": "Enregistrer",
         "enregistrement": "Enregistrement…",
-        "succes": "Mot de passe modifié. Vos autres appareils ont été déconnectés."
+        "succes": "Mot de passe modifié. Vos autres appareils ont été déconnectés.",
+        "afficher": "Afficher le mot de passe",
+        "masquer": "Masquer le mot de passe",
+        "reglesTitre": "Le nouveau mot de passe doit",
+        "regleOk": "respecté",
+        "regleKo": "à corriger",
+        "regles": {
+            "longueur": "compter au moins 12 caractères",
+            "minuscule": "contenir une minuscule",
+            "majuscule": "contenir une majuscule",
+            "chiffre": "contenir un chiffre",
+            "symbole": "contenir un caractère spécial (par exemple ! ? # € _ ou une espace)",
+            "different": "être différent du mot de passe actuel",
+            "confirmation": "être confirmé à l'identique"
+        }
     },
     "filtres": {
         "mois": "Mois",

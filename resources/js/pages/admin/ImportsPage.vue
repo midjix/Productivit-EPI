@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n';
 import client, { messageErreur } from '@/api/client';
 import { useNotificationsStore } from '@/stores/notifications';
 import { date, dateHeure } from '@/utils/format';
+import UiBusy from '@/components/UiBusy.vue';
 import UiCard from '@/components/UiCard.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
 
@@ -167,11 +168,13 @@ const classeStatut = {
                     <option value="">{{ t('admin.imports.tousStatuts') }}</option>
                     <option v-for="s in ['en_cours', 'succes', 'echec']" :key="s" :value="s">{{ t(`admin.imports.statuts.${s}`) }}</option>
                 </select>
-                <button type="button" class="rounded-md border border-border px-3 py-1.5 hover:bg-surface-muted" @click="charger">{{ t('admin.rafraichir') }}</button>
+                <button type="button" class="inline-flex items-center gap-2 rounded-md border border-border px-3 py-1.5 hover:bg-surface-muted" :disabled="chargement" @click="charger">
+                    <UiSpinner v-if="chargement" taille="h-3.5 w-3.5" />{{ t('admin.rafraichir') }}
+                </button>
                 <span v-if="enCours" class="text-xs text-accent-strong">{{ t('admin.imports.enCoursInfo') }}</span>
             </div>
 
-            <div class="overflow-x-auto">
+            <UiBusy :actif="chargement && imports.length > 0" class="overflow-x-auto">
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="border-b border-border text-left text-xs uppercase tracking-wide text-ink-muted">
@@ -221,7 +224,7 @@ const classeStatut = {
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </UiBusy>
 
             <div v-if="meta && meta.last_page > 1" class="mt-3 flex items-center justify-between text-sm">
                 <button type="button" class="rounded-md border border-border px-3 py-1.5 disabled:opacity-40" :disabled="page <= 1" @click="changerPage(page - 1)">‹</button>

@@ -77,7 +77,9 @@ function indexPlat(entree) {
 
 watch(texte, () => {
     actif.value = -1;
-    if (!ouvert.value) nextTick(ouvrir);
+    // Rouvrir seulement si l'utilisateur tape : après un choix, le texte est vidé et le champ
+    // a perdu le focus, la liste doit rester fermée.
+    if (!ouvert.value) nextTick(() => { if (document.activeElement === champ.value) ouvrir(); });
 });
 
 const placeholder = computed(() => (auth.estAdministrateurRole ? t('recherche.placeholderAdmin') : t('recherche.placeholder')));

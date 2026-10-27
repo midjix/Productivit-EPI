@@ -23,7 +23,7 @@ class DefinirMotDePasseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'password' => ['required', 'string', 'confirmed', Password::min(12)->letters()->numbers()],
+            'password' => ['required', 'string', 'confirmed', Password::defaults()],
         ];
     }
 }

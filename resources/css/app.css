@@ -180,3 +180,17 @@ body {
     background-color: var(--surface-muted);
     color: var(--ink);
 }
+
+/*
+ * Listes déroulantes natives : quand le <select> est transparent (sélecteur de mois sur le
+ * bandeau coloré), Chromium dessine la liste avec le fond du système et le texte hérité ;
+ * en thème sombre les mois devenaient presque invisibles. Les options reçoivent donc
+ * explicitement les couleurs du thème.
+ */
+select {
+    color-scheme: inherit;
+}
+option {
+    background-color: var(--surface-raised);
+    color: var(--ink);
+}

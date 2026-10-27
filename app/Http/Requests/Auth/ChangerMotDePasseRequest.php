@@ -25,7 +25,7 @@ class ChangerMotDePasseRequest extends FormRequest
     {
         return [
             'mot_de_passe_actuel' => ['required', 'string', 'current_password:sanctum'],
-            'password' => ['required', 'string', 'confirmed', 'different:mot_de_passe_actuel', Password::min(12)->letters()->numbers()],
+            'password' => ['required', 'string', 'confirmed', 'different:mot_de_passe_actuel', Password::defaults()],
         ];
     }
 }

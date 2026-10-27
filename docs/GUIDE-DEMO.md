@@ -45,7 +45,7 @@ La couleur du menu latéral change avec le rôle : orange (salarié), ocre (coor
 3. Changer d'année avec « ‹ 2026 › » : une année sans données affiche un message clair.
 4. Basculer le thème (icône demi-disque) : automatique → clair → sombre. Le graphique suit.
 5. Changer la langue : tout se traduit, y compris les formats (« 128,0 h » / « 128.0 h ») et les noms de mois.
-6. « Changer mon mot de passe » : l'ancien mot de passe est exigé.
+6. « Changer mon mot de passe » : l'ancien mot de passe est exigé ; la liste des critères (12 caractères, minuscule, majuscule, chiffre, symbole) se coche pendant la saisie et l'œil permet de voir ce que l'on tape. À montrer : taper « motdepasse » et enregistrer, toutes les erreurs s'affichent d'un coup.
 7. À montrer : taper l'URL `/salaries/2` → « Vous n'avez pas accès aux données de ce salarié. » Le serveur refuse, pas seulement l'écran.
 
 ### Coordinateur — `coord.psy@epi.test`

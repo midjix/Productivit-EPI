@@ -124,11 +124,25 @@
     "mdp": {
         "titre": "Change my password",
         "actuel": "Current password",
-        "nouveau": "New password (at least 12 characters, letters and digits)",
+        "nouveau": "New password",
         "confirmer": "Confirm the new password",
         "enregistrer": "Save",
         "enregistrement": "Saving…",
-        "succes": "Password changed. Your other devices have been signed out."
+        "succes": "Password changed. Your other devices have been signed out.",
+        "afficher": "Show the password",
+        "masquer": "Hide the password",
+        "reglesTitre": "The new password must",
+        "regleOk": "met",
+        "regleKo": "not met",
+        "regles": {
+            "longueur": "be at least 12 characters long",
+            "minuscule": "contain a lowercase letter",
+            "majuscule": "contain an uppercase letter",
+            "chiffre": "contain a digit",
+            "symbole": "contain a special character (for example ! ? # € _ or a space)",
+            "different": "differ from the current password",
+            "confirmation": "be confirmed identically"
+        }
     },
     "filtres": {
         "mois": "Month",

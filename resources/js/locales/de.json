@@ -124,11 +124,25 @@
     "mdp": {
         "titre": "Passwort ändern",
         "actuel": "Aktuelles Passwort",
-        "nouveau": "Neues Passwort (mindestens 12 Zeichen, Buchstaben und Ziffern)",
+        "nouveau": "Neues Passwort",
         "confirmer": "Neues Passwort bestätigen",
         "enregistrer": "Speichern",
         "enregistrement": "Wird gespeichert…",
-        "succes": "Passwort geändert. Ihre anderen Geräte wurden abgemeldet."
+        "succes": "Passwort geändert. Ihre anderen Geräte wurden abgemeldet.",
+        "afficher": "Passwort anzeigen",
+        "masquer": "Passwort verbergen",
+        "reglesTitre": "Das neue Passwort muss",
+        "regleOk": "erfüllt",
+        "regleKo": "nicht erfüllt",
+        "regles": {
+            "longueur": "mindestens 12 Zeichen lang sein",
+            "minuscule": "einen Kleinbuchstaben enthalten",
+            "majuscule": "einen Großbuchstaben enthalten",
+            "chiffre": "eine Ziffer enthalten",
+            "symbole": "ein Sonderzeichen enthalten (zum Beispiel ! ? # € _ oder ein Leerzeichen)",
+            "different": "sich vom aktuellen Passwort unterscheiden",
+            "confirmation": "identisch bestätigt werden"
+        }
     },
     "filtres": {
         "mois": "Monat",

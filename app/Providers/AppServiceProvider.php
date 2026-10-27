@@ -11,6 +11,7 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Http\Client\Factory as Http;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -42,5 +43,10 @@ class AppServiceProvider extends ServiceProvider
         // L'API renvoie les ressources JSON sans enveloppe `data` : la SPA lit
         // directement les champs, et une ressource seule ou imbriquée a la même forme.
         JsonResource::withoutWrapping();
+
+        // Politique de mot de passe unique (changement par l'utilisateur, mot de passe initial
+        // par l'Administrateur) : 12 caractères, minuscule et majuscule, chiffre, symbole.
+        // Le front vérifie les mêmes critères en direct (resources/js/utils/motDePasse.js).
+        Password::defaults(fn () => Password::min(12)->letters()->mixedCase()->numbers()->symbols());
     }
 }
