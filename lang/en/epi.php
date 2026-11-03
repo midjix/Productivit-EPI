@@ -4,6 +4,7 @@ return [
     'auth' => [
         'identifiants_incorrects' => 'Incorrect credentials.',
         'compte_desactive' => 'This account is disabled.',
+        'acces_restreint' => 'Trial version: only ":role" accounts can sign in for now.',
         'droits_insuffisants' => 'Insufficient rights for this action.',
         'role_inconnu' => 'Unknown role in route definition: :role',
     ],

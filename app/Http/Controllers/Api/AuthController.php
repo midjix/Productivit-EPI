@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Role;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ChangerMotDePasseRequest;
 use App\Http\Requests\Auth\LoginRequest;
@@ -35,6 +36,14 @@ class AuthController extends Controller
 
         if (! $user->peutSeConnecter()) {
             abort(403, __('epi.auth.compte_desactive'));
+        }
+
+        // Phase de test (version d'essai) : la connexion peut être réservée à un rôle minimum
+        // (config epi.role_minimum_connexion). Un rôle inconnu équivaut à « tout le monde ».
+        $minimum = Role::tryFrom((string) config('epi.role_minimum_connexion', 'salarie')) ?? Role::Salarie;
+
+        if (! $user->aRole($minimum)) {
+            abort(403, __('epi.auth.acces_restreint', ['role' => $minimum->label()]));
         }
 
         $token = $user->createToken($request->string('device_name', 'spa')->toString());

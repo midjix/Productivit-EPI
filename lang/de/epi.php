@@ -4,6 +4,7 @@ return [
     'auth' => [
         'identifiants_incorrects' => 'Ungültige Anmeldedaten.',
         'compte_desactive' => 'Dieses Konto ist deaktiviert.',
+        'acces_restreint' => 'Testversion: Derzeit können sich nur Konten mit der Rolle „:role“ anmelden.',
         'droits_insuffisants' => 'Unzureichende Rechte für diese Aktion.',
         'role_inconnu' => 'Unbekannte Rolle in der Routendefinition: :role',
     ],

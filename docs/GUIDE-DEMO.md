@@ -3,6 +3,11 @@
 > Pour lancer l'application sur le poste de développement et la présenter rôle par rôle
 > (salarié, coordinateur, administrateur) avant le déploiement. Données de démonstration
 > fictives : aucun vrai salarié, aucune donnée réelle de DSK ni d'EpiLogg.
+>
+> Pour la démonstration et la phase d'essai sur les **données réelles** (base `epi_reel` à côté
+> de la base fictive, script `scripts\donnees-reelles.ps1`), voir `GUIDE-DONNEES-REELLES.md` ;
+> pour le déroulé devant le conseil d'administration, `DEMO-CA.md`. Avant de jouer les commandes
+> ci-dessous, vérifier que la base active est bien la base fictive : `.\scripts\donnees-reelles.ps1 etat`.
 
 ## 1. Démarrer (une fois par session de démo)
 

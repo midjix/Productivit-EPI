@@ -12,6 +12,7 @@ return [
     'auth' => [
         'identifiants_incorrects' => 'Identifiants incorrects.',
         'compte_desactive' => 'Ce compte est désactivé.',
+        'acces_restreint' => "Version d'essai : seuls les comptes « :role » peuvent se connecter pour le moment.",
         'droits_insuffisants' => 'Droits insuffisants pour cette action.',
         'role_inconnu' => 'Rôle inconnu dans la définition de route : :role',
     ],

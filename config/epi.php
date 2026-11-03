@@ -19,4 +19,9 @@ return [
     // Nécessaire pour détecter les prestations supprimées côté EpiLogg (pas de soft delete).
     'import_fenetre_jours' => (int) env('EPI_IMPORT_FENETRE_JOURS', 60),
 
+    // Rôle minimum autorisé à se connecter : 'salarie' (tout le monde, défaut), 'coordinateur'
+    // ou 'administrateur' (phase de test réservée aux administrateurs). Contrôlé à la connexion ;
+    // les autres comptes reçoivent un refus explicite (403) au lieu d'un échec d'identifiants.
+    'role_minimum_connexion' => env('EPI_ROLE_MINIMUM_CONNEXION', 'salarie'),
+
 ];
