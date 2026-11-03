@@ -47,6 +47,7 @@ La couleur du menu latéral change avec le rôle : orange (salarié), ocre (coor
 5. Changer la langue : tout se traduit, y compris les formats (« 128,0 h » / « 128.0 h ») et les noms de mois.
 6. « Changer mon mot de passe » : l'ancien mot de passe est exigé ; la liste des critères (12 caractères, minuscule, majuscule, chiffre, symbole) se coche pendant la saisie et l'œil permet de voir ce que l'on tape. À montrer : taper « motdepasse » et enregistrer, toutes les erreurs s'affichent d'un coup.
 7. À montrer : taper l'URL `/salaries/2` → « Vous n'avez pas accès aux données de ce salarié. » Le serveur refuse, pas seulement l'écran.
+8. « Exporter en Excel » (bandeau) : le classeur `efficacite-<nom>-2026.xlsx` reprend la synthèse (avec la colonne « Calcul ») et les mois ; l'ouvrir dans Excel pour montrer que les chiffres sont ceux de l'écran. Le même bouton existe sur « Mon service », « Vue globale » et « Détail » (un onglet par tableau, filtres rappelés en en-tête).
 
 ### Coordinateur — `coord.psy@epi.test`
 1. Menu ocre, entrée « Mon service » en plus.

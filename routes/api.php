@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Admin\TypeSuiviController;
 use App\Http\Controllers\Api\Admin\UtilisateurController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\DetailController;
+use App\Http\Controllers\Api\ExportController;
 use App\Http\Controllers\Api\SalarieController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\StatistiqueController;
@@ -49,17 +50,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/statistiques/salaries/{salarie}', [StatistiqueController::class, 'salarie'])
         ->whereNumber('salarie')->name('api.statistiques.salarie');
 
+    // Export Excel de la vue courante : mêmes règles d'accès que la vue JSON correspondante.
+    Route::get('/exports/statistiques/me', [ExportController::class, 'moi'])->name('api.exports.moi');
+    Route::get('/exports/statistiques/salaries/{salarie}', [ExportController::class, 'salarie'])
+        ->whereNumber('salarie')->name('api.exports.salarie');
+    Route::get('/exports/statistiques/detail', [ExportController::class, 'detail'])->name('api.exports.detail');
+
     // Coordinateur (et Administrateur par héritage) — périmètre contrôlé par ServicePolicy.
     Route::middleware('role:coordinateur')->group(function () {
         Route::get('/services', [ServiceController::class, 'index'])->name('api.services.index');
         Route::get('/salaries', [SalarieController::class, 'index'])->name('api.salaries.index');
         Route::get('/statistiques/services/{service}', [StatistiqueController::class, 'service'])
             ->whereNumber('service')->name('api.statistiques.service');
+        Route::get('/exports/statistiques/services/{service}', [ExportController::class, 'service'])
+            ->whereNumber('service')->name('api.exports.service');
     });
 
     // Administrateur — vue « Total EPI ».
     Route::middleware('role:administrateur')->group(function () {
         Route::get('/statistiques/globales', [StatistiqueController::class, 'globale'])->name('api.statistiques.globales');
+        Route::get('/exports/statistiques/globales', [ExportController::class, 'globale'])->name('api.exports.globales');
     });
 
     // Administration (role:administrateur) : supervision des imports, recalcul,

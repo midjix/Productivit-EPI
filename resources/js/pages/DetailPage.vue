@@ -11,6 +11,7 @@ import UiLoading from '@/components/UiLoading.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
 import UiTooltip from '@/components/UiTooltip.vue';
 import ObjectifBadge from '@/components/ObjectifBadge.vue';
+import ExportButton from '@/components/ExportButton.vue';
 
 /**
  * Écran « Détail » : le niveau de détail de l'écran Excel de la Fondation.
@@ -225,9 +226,17 @@ onMounted(() => {
                         <input id="detail-au" v-model="form.au" type="date" required class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
                         <p v-if="erreurs.au" class="mt-1 text-xs text-bad">{{ erreurs.au[0] }}</p>
                     </div>
-                    <button type="submit" :disabled="chargement" class="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
-                        <UiSpinner v-if="chargement" taille="h-4 w-4" couleur="text-white" />{{ t('detail.appliquer') }}
-                    </button>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button type="submit" :disabled="chargement" class="inline-flex items-center justify-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
+                            <UiSpinner v-if="chargement" taille="h-4 w-4" couleur="text-white" />{{ t('detail.appliquer') }}
+                        </button>
+                        <ExportButton
+                            variante="carte"
+                            url="/exports/statistiques/detail"
+                            :params="{ perimetre: form.perimetre, id: form.id ?? undefined, du: form.du, au: form.au, types_suivi: form.types_suivi, types_prestation: form.types_prestation }"
+                            :desactive="!resultat"
+                        />
+                    </div>
                 </div>
 
                 <div class="grid gap-4 md:grid-cols-2">

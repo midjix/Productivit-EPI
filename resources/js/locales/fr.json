@@ -241,6 +241,12 @@
             "nonValorises": "Forfaits sans barème (non valorisés)"
         }
     },
+    "export": {
+        "bouton": "Exporter en Excel",
+        "enCours": "Export en cours…",
+        "succes": "Fichier {nom} téléchargé.",
+        "erreur": "L'export a échoué, veuillez réessayer."
+    },
     "recherche": {
         "placeholder": "Rechercher un salarié…",
         "placeholderAdmin": "Rechercher un salarié ou un service…",

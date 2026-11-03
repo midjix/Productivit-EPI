@@ -13,6 +13,7 @@ import UiLoading from '@/components/UiLoading.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
 import MonthlyChart from '@/components/MonthlyChart.vue';
 import MonthsTable from '@/components/MonthsTable.vue';
+import ExportButton from '@/components/ExportButton.vue';
 
 /**
  * Cas d'utilisation « Consulter son tableau de bord individuel ».
@@ -78,6 +79,7 @@ onMounted(charger);
                             :to="{ name: 'detail', query: { perimetre: 'salarie', id: donnees?.salarie?.id ?? auth.utilisateur?.id, du: `${annee}-01-01`, au: `${annee}-12-31` } }"
                             class="rounded-full border border-current/60 px-3 py-1.5 text-sm hover:bg-white/15"
                         >{{ t('detail.voirDetail') }}</RouterLink>
+                        <ExportButton :url="props.id ? `/exports/statistiques/salaries/${props.id}` : '/exports/statistiques/me'" :params="{ annee }" :desactive="!aDesDonnees" />
                         <YearPicker v-model="annee" :disponibles="anneesDisponibles" :max="anneeCourante" />
                     </div>
                 </div>

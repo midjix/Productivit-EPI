@@ -241,6 +241,12 @@
             "nonValorises": "Pauschalen ohne Tarifwert (nicht bewertet)"
         }
     },
+    "export": {
+        "bouton": "Nach Excel exportieren",
+        "enCours": "Export läuft…",
+        "succes": "Datei {nom} heruntergeladen.",
+        "erreur": "Der Export ist fehlgeschlagen, bitte erneut versuchen."
+    },
     "recherche": {
         "placeholder": "Mitarbeiter suchen…",
         "placeholderAdmin": "Mitarbeiter oder Abteilung suchen…",

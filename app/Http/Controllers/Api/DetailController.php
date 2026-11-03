@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Concerns\AutorisePerimetreDetail;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DetailRequest;
 use App\Models\CategorieSuivi;
 use App\Models\DonneeEpilogg;
 use App\Models\Service;
 use App\Models\Tarif;
-use App\Models\User;
 use App\Services\DetailService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 
 /**
  * Écran « Détail » (niveau de détail du fichier Excel de la Fondation) :
@@ -20,13 +19,15 @@ use Illuminate\Support\Facades\Gate;
  */
 class DetailController extends Controller
 {
+    use AutorisePerimetreDetail;
+
     public function __construct(private readonly DetailService $detail) {}
 
     public function show(DetailRequest $request): JsonResponse
     {
         $perimetre = $request->validated('perimetre');
         $id = $request->validated('id') !== null ? (int) $request->validated('id') : null;
-        $libelle = $this->autoriser($request->user(), $perimetre, $id);
+        $libelle = $this->autoriserPerimetre($request->user(), $perimetre, $id);
 
         $resultat = $this->detail->calculer($perimetre, $id, $request->du(), $request->au(), $request->typesSuivi(), $request->typesPrestation());
 
@@ -64,29 +65,4 @@ class DetailController extends Controller
         ]);
     }
 
-    /** Contrôle du périmètre et libellé affiché. */
-    private function autoriser(User $user, string $perimetre, ?int $id): string
-    {
-        switch ($perimetre) {
-            case 'salarie':
-                $cible = User::findOrFail($id);
-                Gate::authorize('voirStatistiques', $cible);
-
-                return $cible->name;
-            case 'service':
-                $service = Service::findOrFail($id);
-                Gate::authorize('voirStatistiques', $service);
-
-                return $service->nom;
-            case 'tarif':
-                abort_unless($user->estAdministrateur(), 403, __('epi.auth.droits_insuffisants'));
-                $tarif = Tarif::findOrFail($id);
-
-                return __('epi.detail.tarif', ['code' => $tarif->code]);
-            default:
-                abort_unless($user->estAdministrateur(), 403, __('epi.auth.droits_insuffisants'));
-
-                return __('epi.detail.'.$perimetre);
-        }
-    }
 }

@@ -12,6 +12,7 @@ import UiLoading from '@/components/UiLoading.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
 import RatioBarChart from '@/components/RatioBarChart.vue';
 import ObjectifBadge from '@/components/ObjectifBadge.vue';
+import ExportButton from '@/components/ExportButton.vue';
 
 /**
  * Cas d'utilisation « Consulter les statistiques de son service » :
@@ -116,6 +117,7 @@ onMounted(async () => {
                             :to="{ name: 'detail', query: { perimetre: 'service', id: serviceId, du: periodeDetail.du, au: periodeDetail.au } }"
                             class="rounded-full border border-current/60 px-3 py-1.5 text-sm hover:bg-white/15"
                         >{{ t('detail.voirDetail') }}</RouterLink>
+                        <ExportButton v-if="serviceId !== null" :url="`/exports/statistiques/services/${serviceId}`" :params="{ annee, mois: mois ?? undefined }" :desactive="salaries.length === 0" />
                         <PeriodeFilters v-model:annee="annee" v-model:mois="mois" />
                     </div>
                 </div>

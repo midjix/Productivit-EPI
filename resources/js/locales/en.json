@@ -241,6 +241,12 @@
             "nonValorises": "Packages without a scale (not valued)"
         }
     },
+    "export": {
+        "bouton": "Export to Excel",
+        "enCours": "Exporting…",
+        "succes": "File {nom} downloaded.",
+        "erreur": "The export failed, please try again."
+    },
     "recherche": {
         "placeholder": "Search for an employee…",
         "placeholderAdmin": "Search for an employee or a department…",
