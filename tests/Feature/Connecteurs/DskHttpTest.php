@@ -113,6 +113,30 @@ class DskHttpTest extends TestCase
     }
 
     #[Test]
+    public function accepte_la_forme_reelle_du_serveur_dsknet(): void
+    {
+        // Relevé du 05/11/2026 sur SRV-DATA : `date` / `val` (et non `theDate` / `value`), `meta.page` null
+        // (pagination ignorée par le serveur : tout est renvoyé d'un coup), valeurs négatives possibles (soldes).
+        Http::fake([
+            self::BASE.'/accounts/calc/all*' => Http::response([
+                'meta' => ['resource' => '/API/dsknet/v2/accounts/calc/all', 'dataCnt' => 2, 'page' => null],
+                'data' => [
+                    ['noPers' => 5, 'date' => '2026-10-01', 'accounts' => [['noAccount' => 68, 'val' => 380, 'codeCountry' => null], ['noAccount' => 53, 'val' => -40, 'codeCountry' => null]]],
+                    ['noPers' => 5, 'date' => '2026-10-02', 'accounts' => [['noAccount' => 68, 'val' => 428, 'codeCountry' => null]]],
+                ],
+            ]),
+        ]);
+
+        $minutes = iterator_to_array($this->connecteur('STATIQUE')->minutesParJour(now()->parse('2026-10-01'), now()->parse('2026-10-31')));
+
+        $this->assertCount(3, $minutes);
+        $this->assertSame([5, '2026-10-01', 68, 380], [$minutes[0]->noPers, $minutes[0]->date->toDateString(), $minutes[0]->noAccount, $minutes[0]->minutes]);
+        $this->assertSame(-40, $minutes[1]->minutes);
+        $this->assertSame('2026-10-02', $minutes[2]->date->toDateString());
+        Http::assertSentCount(1, 'meta.page absent : une seule page demandée');
+    }
+
+    #[Test]
     public function se_reconnecte_une_fois_sur_jeton_expire(): void
     {
         Cache::put('dsk.api.token', 'PERIME', now()->addHour());

@@ -89,11 +89,11 @@ class VerifierSources extends Command
             return;
         }
 
-        $this->detail('Départements', $d['departements'], $this->annexe($d['departements_nouveaux'], 'nouveau(x), à rapprocher de l\'organigramme'));
-        $this->detail('Compteurs (comptes d\'heures)', $d['comptes'], $this->annexe($d['comptes_nouveaux'], 'nouveau(x)'));
+        $this->detail('Départements', $d['departements'], $this->annexe($d['departements_nouveaux_total'], 'nouveau(x), à rapprocher de l\'organigramme'));
+        $this->detail('Compteurs (comptes d\'heures)', $d['comptes'], $this->annexe($d['comptes_nouveaux_total'], 'nouveau(x)'));
         $this->detail('Compteurs à qualifier après import', $d['comptes_a_qualifier']);
-        $this->detail('Salariés sur la période', $d['salaries'], $this->annexe($d['salaries_sans_email'], 'sans email : appariement EpiLogg impossible'));
-        $this->detail('Lignes de minutes (salarié × jour × compteur)', $d['lignes_minutes'], $this->annexe($d['minutes_salaries_inconnus'], 'noPers absent(s) de la liste des salariés : lignes ignorées'));
+        $this->detail('Salariés sur la période', $d['salaries'], $this->annexe($d['salaries_sans_email_total'], 'sans email : appariement EpiLogg impossible'));
+        $this->detail('Lignes de minutes (salarié × jour × compteur)', $d['lignes_minutes'], $this->annexe($d['minutes_salaries_inconnus_total'], 'noPers absent(s) de la liste des salariés : lignes ignorées'));
 
         $this->listes([
             'Départements nouveaux' => $d['departements_nouveaux'],
@@ -112,7 +112,7 @@ class VerifierSources extends Command
         }
 
         $this->detail('Types de suivi', $e['types'], $e['types_nouveaux'] > 0 ? "{$e['types_nouveaux']} nouveau(x)" : null);
-        $this->detail('Types actifs sans tarif reconnu (→ activité interne)', count($e['types_sans_tarif']));
+        $this->detail('Types actifs sans tarif reconnu (→ activité interne)', $e['types_sans_tarif_total']);
         $this->detail('Comptes utilisateurs actifs', $e['utilisateurs_actifs'], $e['utilisateurs_actifs_sans_email'] > 0 ? "{$e['utilisateurs_actifs_sans_email']} sans email" : null);
         $this->detail('Prestations sur la période', $e['prestations'], $e['prestations_utilisateur_inactif'] > 0 ? "{$e['prestations_utilisateur_inactif']} d'un compte inactif ou supprimé" : null);
 
@@ -157,10 +157,9 @@ class VerifierSources extends Command
         $this->components->twoColumnDetail($libelle, (string) $valeur.($annexe !== null ? "  <fg=yellow>{$annexe}</>" : ''));
     }
 
-    /** @param  array<int, string>  $liste */
-    private function annexe(array $liste, string $texte): ?string
+    private function annexe(int $total, string $texte): ?string
     {
-        return $liste === [] ? null : count($liste).' '.$texte;
+        return $total === 0 ? null : $total.' '.$texte;
     }
 
     /** @param  array<string, array<int, string>>  $listes */

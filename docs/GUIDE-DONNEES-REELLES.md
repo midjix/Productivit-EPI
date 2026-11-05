@@ -77,6 +77,25 @@ docker compose exec laravel.test php artisan epi:verifier --json            # po
 Code de retour 0 = prêt, 1 = une source ne répond pas : la commande sert aussi de test
 d'installation (CBC l'exécutera après le déploiement).
 
+### Ce que le premier chargement réel a appris (05/11/2026, sur place)
+
+- **DSK ne fournit des compteurs calculés qu'à partir du 1ᵉʳ janvier 2026** : les années
+  antérieures reviennent vides (une seule ligne de crédit annuel en 2025). L'efficacité est donc
+  calculable sur 2026 ; EpiLogg, lui, remonte à décembre 2022 (prestations seules). À demander à
+  DSK si l'historique antérieur peut être recalculé ou exposé.
+- Le serveur nomme `date` et `val` ce que la spécification appelait `theDate` et `value`, et ignore
+  la pagination : corrigé dans le connecteur, qui accepte les deux formes.
+- Départements DSK : `ADMIN`, `AISP`, `FU`, `PSY` (pas de service logement). Le référentiel de départ
+  avait `FOLLOWUP` et `LOGEMENT` : `FU` a été renommé « Follow Up », les deux autres désactivés.
+- Cinq salariés n'ont pas d'email dans DSK et une adresse diffère entre DSK et EpiLogg : complétés
+  à la main dans la base locale (à aligner dans DSK par la Fondation, sinon à refaire après chaque
+  réimport DSK pour l'adresse différente).
+- Qualification par défaut appliquée d'après la liste de la Fondation : 68 « H Normales » = normal ;
+  1, 2, 12 = congé ; 4 = maladie ; 13, 15, 17 = formation ; 16, 18 = supervision ; tout le reste
+  « autre, hors total ». **À valider avec M. Flammant** : jours fériés (61), télétravail effectif
+  (8558), sorties en service (56), permanences (8557), et si le département ADMIN entre dans le
+  « Total EPI ».
+
 ## 5. Charger l'historique
 
 L'import remplace la fenêtre demandée (idempotent : relancer la même période donne le même
@@ -162,7 +181,7 @@ sera reconstruite par CBC depuis les sources : rien de ce poste n'a besoin d'êt
 
 | Symptôme | Cause probable | Remède |
 |---|---|---|
-| `cURL error 6: Could not resolve host: srv-data` | Pas de route VPN vers SRV-DATA | Ouverture à demander à CBC ; en attendant `--source=epilogg` |
+| `cURL error 6: Could not resolve host: srv-data` ou délai dépassé sur 192.168.50.6:80 | SRV-DATA (serveur DSK.net, géré par DSK) est sur le réseau local de la Fondation ; l'accès VPN créé par CBC ne laisse passer que la base EpiLogg | Faire l'import **depuis les locaux de la Fondation** (portable sur leur réseau, aucun VPN nécessaire), ou demander à CBC d'ajouter `srv-data:80` à la politique du VPN ; en attendant `--source=epilogg` |
 | `DSK injoignable ou authentification refusée (HTTP 401)` | Identifiants / jeton DSK | Vérifier `DSK_API_LOGIN` / `DSK_API_PASSWORD` ; un jeton statique remplace le login |
 | `SQLSTATE[HY000] [2002]` sur EpiLogg | VPN coupé | Reconnecter le VPN, relancer |
 | `La session EpiLogg n'est pas en lecture seule : import refusé` | Compte SQL non restreint | Ne pas forcer : demander à CBC un compte en lecture seule |

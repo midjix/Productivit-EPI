@@ -105,7 +105,9 @@ class DskHttp implements ConnecteurDsk
         $query = ['dateFrom' => $du->format(self::FORMAT_DATE), 'dateTo' => $au->format(self::FORMAT_DATE)];
 
         foreach ($this->lire('/accounts/calc/all', $query) as $jour) {
-            $date = $this->date($jour['theDate'] ?? null);
+            // Le serveur réel (DSK.net v2, relevé le 05/11/2026) renvoie `date` et `val` là où la
+            // spécification OpenAPI annonçait `theDate` et `value` : les deux formes sont acceptées.
+            $date = $this->date($jour['date'] ?? $jour['theDate'] ?? null);
 
             if ($date === null) {
                 continue;
@@ -116,7 +118,7 @@ class DskHttp implements ConnecteurDsk
                     noPers: (int) $jour['noPers'],
                     date: $date,
                     noAccount: (int) $compte['noAccount'],
-                    minutes: (int) round((float) ($compte['value'] ?? 0)),
+                    minutes: (int) round((float) ($compte['val'] ?? $compte['value'] ?? 0)),
                 );
             }
         }
