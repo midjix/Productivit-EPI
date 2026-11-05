@@ -52,6 +52,14 @@ promu ; sinon un compte technique est créé (il n'apparaît dans aucune statist
 administrateurs testeurs, utiliser leur adresse professionnelle **après** l'import DSK : leur compte
 sera apparié à leurs propres heures.
 
+**Compte d'essai jetable** : un compte technique (adresse hors de la Fondation, par ex.
+`admin.temporaire@epi.test`) n'est lié à aucune source et n'apparaît dans aucune statistique.
+Il se supprime en une commande, jetons compris :
+
+```powershell
+docker compose exec laravel.test php artisan tinker --execute="App\Models\User::where('email','admin.temporaire@epi.test')->get()->each(function (\$u) { \$u->tokens()->delete(); \$u->delete(); }); echo 'comptes restants : '.App\Models\User::count();"
+```
+
 ## 4. Répétition générale : `epi:verifier` (lecture seule)
 
 Avant tout import, la commande interroge les sources exactement comme l'import le ferait, **sans
