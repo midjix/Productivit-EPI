@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { definirLocaleFormat, heures, heuresDecimales, nomMois, nombre, pourcentage } from './format';
+import { date, dateHeure, definirLocaleFormat, heures, heuresDecimales, nomMois, nombre, pourcentage } from './format';
 
 /** Les espaces insécables (fines ou non) produits par Intl sont ramenés à une espace simple pour comparer. */
 const n = (s) => s.replace(/[  ]/g, ' ');
@@ -59,5 +59,19 @@ describe('format (autres langues)', () => {
 
         definirLocaleFormat('xx'); // inconnue → français
         expect(nomMois(4)).toBe('Avril');
+    });
+
+    it('écrit les dates dans un format propre à chaque langue', () => {
+        // Le mois en lettres rend la langue visible : le format court fr et en-GB était identique (23/10/2026).
+        definirLocaleFormat('fr');
+        expect(n(date('2026-10-23'))).toBe('23 oct. 2026');
+        expect(n(dateHeure('2026-10-23T09:10:36+00:00'))).toMatch(/^23 oct\. 2026,? \d{2}:\d{2}$/);
+        expect(date(null)).toBe('—');
+
+        definirLocaleFormat('en');
+        expect(n(date('2026-10-23'))).toBe('23 Oct 2026');
+
+        definirLocaleFormat('de');
+        expect(n(date('2026-10-23'))).toBe('23.10.2026');
     });
 });

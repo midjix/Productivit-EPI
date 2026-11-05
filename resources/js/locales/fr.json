@@ -179,7 +179,7 @@
         "horsTotal": "hors total",
         "aucuneDonnee": "Aucune donnée sur cette période.",
         "indicateurs": "Indicateurs de synthèse",
-        "indicateursSousTitre": "cascade d'efficacité sur la période",
+        "indicateursSousTitre": "calcul de l'efficacité sur la période : total → dispo EPI → dispo client → ratio",
         "noteTarif": "Les heures DSK sont celles des salariés ayant réalisé ces prestations sur la période ; la règle d'attribution des heures à un tarif reste à confirmer avec la Fondation.",
         "aideSurvol": "Survolez une ligne (ou parcourez-les au clavier) pour voir l'explication et le détail du calcul.",
         "part": "Part",
@@ -195,7 +195,7 @@
             "serviceInterne": "Types de suivi sans service (activité interne) : {forfaits} forfaits = {heures}.",
             "typePrestation": "Prestations EpiLogg de type « {libelle} » : {forfaits} forfaits = {heures}, soit {part} des heures de prestations de la période.",
             "compte": "Compteur DSK n° {no} « {libelle} » : {heures} pointées par {nb} salarié(s) sur la période.",
-            "compteHorsTotal": "Ce compteur est exclu du total (réglage Administration › Référentiels) : il n'entre pas dans la cascade.",
+            "compteHorsTotal": "Ce compteur est exclu du total (réglage Administration › Référentiels) : ses heures ne comptent nulle part dans le calcul de l'efficacité, ni dans le total, ni dans les déductions.",
             "cat": {
                 "normal": "Catégorie « {cat} » : compte dans le total des heures disponibles, sans déduction.",
                 "conge": "Catégorie « {cat} » : déduite du total pour obtenir les heures dispo EPI.",

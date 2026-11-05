@@ -179,7 +179,7 @@
         "horsTotal": "excluded from total",
         "aucuneDonnee": "No data for this period.",
         "indicateurs": "Summary indicators",
-        "indicateursSousTitre": "efficiency cascade over the period",
+        "indicateursSousTitre": "efficiency calculation over the period: total → EPI available → client available → ratio",
         "noteTarif": "DSK hours are those of the employees who delivered these services over the period; the rule for attributing hours to a tariff is still to be confirmed with the Foundation.",
         "aideSurvol": "Hover over a row (or move through the rows with the keyboard) to see the explanation and how the figure is computed.",
         "part": "Share",
@@ -195,7 +195,7 @@
             "serviceInterne": "Follow-up types without a department (internal activity): {forfaits} packages = {heures}.",
             "typePrestation": "EpiLogg services of type “{libelle}”: {forfaits} packages = {heures}, i.e. {part} of the period's service hours.",
             "compte": "DSK account no. {no} “{libelle}”: {heures} recorded by {nb} employee(s) over the period.",
-            "compteHorsTotal": "This account is excluded from the total (Administration › Reference data setting): it plays no part in the cascade.",
+            "compteHorsTotal": "This account is excluded from the total (Administration › Reference data setting): its hours are not counted anywhere in the efficiency calculation, neither in the total nor in the deductions.",
             "cat": {
                 "normal": "Category “{cat}”: counts towards total available hours, without deduction.",
                 "conge": "Category “{cat}”: deducted from the total to obtain EPI available hours.",

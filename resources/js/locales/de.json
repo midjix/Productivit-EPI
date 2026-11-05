@@ -179,7 +179,7 @@
         "horsTotal": "nicht im Total",
         "aucuneDonnee": "Keine Daten für diesen Zeitraum.",
         "indicateurs": "Kennzahlen",
-        "indicateursSousTitre": "Effizienzkaskade über den Zeitraum",
+        "indicateursSousTitre": "Effizienzberechnung über den Zeitraum: Gesamt → verfügbar EPI → verfügbar für Klienten → Quote",
         "noteTarif": "Die DSK-Stunden sind die der Mitarbeiter, die diese Leistungen im Zeitraum erbracht haben; die Regel zur Zuordnung der Stunden zu einem Tarif ist mit der Stiftung noch zu bestätigen.",
         "aideSurvol": "Fahren Sie mit der Maus über eine Zeile (oder gehen Sie die Zeilen mit der Tastatur durch), um die Erklärung und die Berechnung zu sehen.",
         "part": "Anteil",
@@ -195,7 +195,7 @@
             "serviceInterne": "Betreuungsarten ohne Abteilung (interne Tätigkeit): {forfaits} Pauschalen = {heures}.",
             "typePrestation": "EpiLogg-Leistungen der Art „{libelle}“: {forfaits} Pauschalen = {heures}, d. h. {part} der Leistungsstunden des Zeitraums.",
             "compte": "DSK-Konto Nr. {no} „{libelle}“: {heures} erfasst von {nb} Mitarbeiter(n) im Zeitraum.",
-            "compteHorsTotal": "Dieses Konto ist vom Total ausgeschlossen (Einstellung Verwaltung › Stammdaten): es geht nicht in die Kaskade ein.",
+            "compteHorsTotal": "Dieses Konto ist vom Total ausgeschlossen (Einstellung Verwaltung › Stammdaten): seine Stunden werden nirgends in der Effizienzberechnung gezählt, weder im Total noch bei den Abzügen.",
             "cat": {
                 "normal": "Kategorie „{cat}“: zählt ohne Abzug zu den verfügbaren Stunden gesamt.",
                 "conge": "Kategorie „{cat}“: wird vom Total abgezogen, um die verfügbaren EPI-Stunden zu erhalten.",

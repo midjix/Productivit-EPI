@@ -57,15 +57,20 @@ export function nomMois(mois, court = false) {
     return nom.charAt(0).toUpperCase() + nom.slice(1);
 }
 
-/** "2026-10-23T09:10:36+00:00" → date et heure locales courtes. */
+/**
+ * "2026-10-23T09:10:36+00:00" → date et heure locales : "23 oct. 2026, 09:10" (fr),
+ * "23 Oct 2026, 09:10" (en), "23.10.2026, 09:10" (de).
+ * Le style « medium » (mois en lettres) est préféré au style court : en français comme en
+ * anglais britannique, le style court donne « 23/10/2026 », la langue choisie ne se voyait pas.
+ */
 export function dateHeure(iso) {
     if (!iso) return '—';
-    return new Intl.DateTimeFormat(localeCourante, { dateStyle: 'short', timeStyle: 'short' }).format(new Date(iso));
+    return new Intl.DateTimeFormat(localeCourante, { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso));
 }
 
-/** "2026-10-23" → date locale courte. */
+/** "2026-10-23" → "23 oct. 2026" (fr), "23 Oct 2026" (en), "23.10.2026" (de). */
 export function date(iso) {
     if (!iso) return '—';
     const [a, m, j] = String(iso).slice(0, 10).split('-').map(Number);
-    return new Intl.DateTimeFormat(localeCourante, { dateStyle: 'short' }).format(new Date(a, m - 1, j));
+    return new Intl.DateTimeFormat(localeCourante, { dateStyle: 'medium' }).format(new Date(a, m - 1, j));
 }
