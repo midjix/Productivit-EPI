@@ -114,7 +114,11 @@ Puis, dans l'application (menu Administration) :
 1. **Référentiels › Compteurs DSK** : donner une catégorie à chaque compteur (normal, congé,
    maladie, formation, supervision, déplacement, autre) et cocher « dans le total » quand il
    compte dans le temps de travail. Chaque enregistrement recalcule les mois concernés.
-2. **Référentiels › Types de suivi**, filtre « non qualifiés » : choisir le tarif.
+2. **Référentiels › Types de suivi**, filtre « non qualifiés » : choisir le tarif ; donner aussi
+   un **service** aux types facturables (8.1 AISP → AISP, 8.1 Follow Up → Follow Up, 9.1 → PSY…) :
+   c'est ce rattachement qu'utilise le tableau « Par service » de l'écran Détail (un type sans
+   service y apparaît comme activité interne). Fait le 05/11 pour quatre types ; « 8.1 Thérapie
+   familiale » reste à rattacher par la Fondation.
 3. **Organigramme** : renommer les services créés depuis les codes DSK, vérifier les rôles
    (coordinateurs), désactiver les comptes partis si DSK ne le fait pas.
 4. **Imports › Recalculer** (ou `php artisan epi:recalculer`) pour reconsolider toute la période.
