@@ -148,6 +148,9 @@
         "mois": "Mois",
         "touteAnnee": "Toute l'année"
     },
+    "champs": {
+        "ouvrirCalendrier": "Ouvrir le calendrier"
+    },
     "detail": {
         "titre": "Détail",
         "sousTitre": "heures par type de suivi, tarif, service, type de prestation et compteur DSK, sur une période libre",

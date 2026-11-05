@@ -148,6 +148,9 @@
         "mois": "Month",
         "touteAnnee": "Whole year"
     },
+    "champs": {
+        "ouvrirCalendrier": "Open the calendar"
+    },
     "detail": {
         "titre": "Details",
         "sousTitre": "hours by follow-up type, tariff, department, service type and DSK account, over any period",

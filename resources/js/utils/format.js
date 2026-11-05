@@ -74,3 +74,42 @@ export function date(iso) {
     const [a, m, j] = String(iso).slice(0, 10).split('-').map(Number);
     return new Intl.DateTimeFormat(localeCourante, { dateStyle: 'medium' }).format(new Date(a, m - 1, j));
 }
+
+/* Saisie de dates (composant DateInput) : jour en premier dans les trois langues, séparateur selon la langue. */
+
+const MASQUES = { 'fr-LU': 'JJ/MM/AAAA', 'en-GB': 'DD/MM/YYYY', 'de-LU': 'TT.MM.JJJJ' };
+
+/** Gabarit de saisie dans la langue courante, affiché en indication du champ. */
+export function masqueDate() {
+    return MASQUES[localeCourante] ?? MASQUES['fr-LU'];
+}
+
+/** "2026-01-05" → "05/01/2026" (fr, en) / "05.01.2026" (de) : forme numérique pour les champs de saisie ; vide → "". */
+export function dateNumerique(iso) {
+    if (!iso) return '';
+    const [a, m, j] = String(iso).slice(0, 10).split('-').map(Number);
+    return new Intl.DateTimeFormat(localeCourante, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(a, m - 1, j));
+}
+
+/**
+ * Texte saisi → "AAAA-MM-JJ", ou null s'il n'est pas (encore) une date.
+ * Jour, mois, année sur quatre chiffres, séparés par « / », « . » ou « - » ("5/1/2026", "05.01.2026") ;
+ * la forme ISO "2026-01-05" est acceptée telle quelle. Une date impossible (31/02) donne null.
+ */
+export function analyserDateSaisie(texte) {
+    const t = String(texte ?? '').trim();
+    let a;
+    let m;
+    let j;
+    const iso = /^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(t);
+    if (iso) {
+        [a, m, j] = iso.slice(1).map(Number);
+    } else {
+        const local = /^(\d{1,2})[/.-](\d{1,2})[/.-](\d{4})$/.exec(t);
+        if (!local) return null;
+        [j, m, a] = local.slice(1).map(Number);
+    }
+    const d = new Date(a, m - 1, j);
+    if (d.getFullYear() !== a || d.getMonth() !== m - 1 || d.getDate() !== j) return null;
+    return `${a}-${String(m).padStart(2, '0')}-${String(j).padStart(2, '0')}`;
+}

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { date, dateHeure, definirLocaleFormat, heures, heuresDecimales, nomMois, nombre, pourcentage } from './format';
+import { analyserDateSaisie, date, dateHeure, dateNumerique, definirLocaleFormat, heures, heuresDecimales, masqueDate, nomMois, nombre, pourcentage } from './format';
 
 /** Les espaces insécables (fines ou non) produits par Intl sont ramenés à une espace simple pour comparer. */
 const n = (s) => s.replace(/[  ]/g, ' ');
@@ -73,5 +73,31 @@ describe('format (autres langues)', () => {
 
         definirLocaleFormat('de');
         expect(n(date('2026-10-23'))).toBe('23.10.2026');
+    });
+
+    it('propose un gabarit de saisie et une forme numérique par langue', () => {
+        definirLocaleFormat('fr');
+        expect(masqueDate()).toBe('JJ/MM/AAAA');
+        expect(dateNumerique('2026-01-05')).toBe('05/01/2026');
+        expect(dateNumerique('')).toBe('');
+        definirLocaleFormat('en');
+        expect(masqueDate()).toBe('DD/MM/YYYY');
+        expect(dateNumerique('2026-01-05')).toBe('05/01/2026');
+        definirLocaleFormat('de');
+        expect(masqueDate()).toBe('TT.MM.JJJJ');
+        expect(dateNumerique('2026-01-05')).toBe('05.01.2026');
+    });
+
+    it('lit une date saisie jour en premier, quel que soit le séparateur', () => {
+        expect(analyserDateSaisie('05/01/2026')).toBe('2026-01-05');
+        expect(analyserDateSaisie('5.1.2026')).toBe('2026-01-05');
+        expect(analyserDateSaisie(' 31-12-2026 ')).toBe('2026-12-31');
+        expect(analyserDateSaisie('2026-01-05')).toBe('2026-01-05');
+        expect(analyserDateSaisie('31/02/2026')).toBeNull(); // date impossible
+        expect(analyserDateSaisie('01/13/2026')).toBeNull(); // mois/jour/année refusé
+        expect(analyserDateSaisie('05/01/26')).toBeNull(); // année sur deux chiffres : ambiguë
+        expect(analyserDateSaisie('05/01')).toBeNull(); // incomplète
+        expect(analyserDateSaisie('')).toBeNull();
+        expect(analyserDateSaisie(null)).toBeNull();
     });
 });

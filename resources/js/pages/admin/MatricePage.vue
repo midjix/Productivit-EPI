@@ -8,6 +8,7 @@ import UiCard from '@/components/UiCard.vue';
 import UiLoading from '@/components/UiLoading.vue';
 import UiModal from '@/components/UiModal.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
+import DateInput from '@/components/DateInput.vue';
 
 /**
  * Cas d'utilisation « Gérer la matrice de conversion » : historique des barèmes par tarif
@@ -114,7 +115,7 @@ onMounted(charger);
                 </div>
                 <div>
                     <label for="date_debut" class="mb-1 block text-sm text-ink-secondary">{{ t('admin.matrice.dateApplication') }}</label>
-                    <input id="date_debut" v-model="form.date_debut" type="date" required class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                    <DateInput id="date_debut" v-model="form.date_debut" required :invalide="!!erreurs.date_debut" />
                     <p v-if="erreurs.date_debut" class="mt-1 text-sm text-bad">{{ erreurs.date_debut[0] }}</p>
                 </div>
                 <div>

@@ -7,6 +7,7 @@ import { date, dateHeure } from '@/utils/format';
 import UiBusy from '@/components/UiBusy.vue';
 import UiCard from '@/components/UiCard.vue';
 import UiSpinner from '@/components/UiSpinner.vue';
+import DateInput from '@/components/DateInput.vue';
 
 /**
  * Cas d'utilisation « Superviser les imports », « Importer les données » (manuel)
@@ -120,12 +121,12 @@ const classeStatut = {
                     </div>
                     <div class="min-w-[10rem] flex-1">
                         <label for="import-du" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.du') }}</label>
-                        <input id="import-du" v-model="formImport.du" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                        <DateInput id="import-du" v-model="formImport.du" :invalide="!!erreursImport.du" />
                         <p v-if="erreursImport.du" class="mt-1 text-xs text-bad">{{ erreursImport.du[0] }}</p>
                     </div>
                     <div class="min-w-[10rem] flex-1">
                         <label for="import-au" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.au') }}</label>
-                        <input id="import-au" v-model="formImport.au" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                        <DateInput id="import-au" v-model="formImport.au" :invalide="!!erreursImport.au" />
                         <p v-if="erreursImport.au" class="mt-1 text-xs text-bad">{{ erreursImport.au[0] }}</p>
                     </div>
                     <button type="submit" :disabled="envoi" class="inline-flex shrink-0 items-center gap-2 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:bg-accent-strong disabled:opacity-60">
@@ -140,12 +141,12 @@ const classeStatut = {
                 <form class="flex flex-wrap items-end gap-3" @submit.prevent="lancerRecalcul">
                     <div class="min-w-[10rem] flex-1">
                         <label for="recalc-du" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.du') }}</label>
-                        <input id="recalc-du" v-model="formRecalcul.du" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                        <DateInput id="recalc-du" v-model="formRecalcul.du" :invalide="!!erreursRecalcul.du" />
                         <p v-if="erreursRecalcul.du" class="mt-1 text-xs text-bad">{{ erreursRecalcul.du[0] }}</p>
                     </div>
                     <div class="min-w-[10rem] flex-1">
                         <label for="recalc-au" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.au') }}</label>
-                        <input id="recalc-au" v-model="formRecalcul.au" type="date" class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                        <DateInput id="recalc-au" v-model="formRecalcul.au" :invalide="!!erreursRecalcul.au" />
                         <p v-if="erreursRecalcul.au" class="mt-1 text-xs text-bad">{{ erreursRecalcul.au[0] }}</p>
                     </div>
                     <button type="submit" :disabled="envoi" class="inline-flex shrink-0 items-center gap-2 rounded-full border border-accent px-5 py-2 text-sm font-semibold text-accent-strong hover:bg-accent/10 disabled:opacity-60">

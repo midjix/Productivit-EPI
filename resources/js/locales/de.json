@@ -148,6 +148,9 @@
         "mois": "Monat",
         "touteAnnee": "Ganzes Jahr"
     },
+    "champs": {
+        "ouvrirCalendrier": "Kalender öffnen"
+    },
     "detail": {
         "titre": "Details",
         "sousTitre": "Stunden nach Betreuungsart, Tarif, Abteilung, Leistungsart und DSK-Konto, über einen frei wählbaren Zeitraum",

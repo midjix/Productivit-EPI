@@ -12,6 +12,7 @@ import UiSpinner from '@/components/UiSpinner.vue';
 import UiTooltip from '@/components/UiTooltip.vue';
 import ObjectifBadge from '@/components/ObjectifBadge.vue';
 import ExportButton from '@/components/ExportButton.vue';
+import DateInput from '@/components/DateInput.vue';
 
 /**
  * Écran « Détail » : le niveau de détail de l'écran Excel de la Fondation.
@@ -218,12 +219,12 @@ onMounted(() => {
                     </div>
                     <div>
                         <label for="detail-du" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.du') }}</label>
-                        <input id="detail-du" v-model="form.du" type="date" required class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                        <DateInput id="detail-du" v-model="form.du" required :invalide="!!erreurs.du" />
                         <p v-if="erreurs.du" class="mt-1 text-xs text-bad">{{ erreurs.du[0] }}</p>
                     </div>
                     <div>
                         <label for="detail-au" class="mb-1 block text-xs uppercase tracking-wide text-ink-muted">{{ t('admin.au') }}</label>
-                        <input id="detail-au" v-model="form.au" type="date" required class="w-full rounded-md border border-border bg-surface px-3 py-2 text-ink" />
+                        <DateInput id="detail-au" v-model="form.au" required :invalide="!!erreurs.au" />
                         <p v-if="erreurs.au" class="mt-1 text-xs text-bad">{{ erreurs.au[0] }}</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
